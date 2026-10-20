@@ -1,0 +1,1528 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A guided course for getting off Auto on the Canon EOS Rebel T6: lessons, a coached camera simulator, drills and field missions.">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>T6 Field School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: camera-body workbench. A live viewfinder on the left, the camera's controls on the right, lessons and games in tabs. */
+:root{
+  --bg:#E8EBEE; --surface:#F7F8FA; --sunk:#DDE2E7; --ink:#15181C; --muted:#56606B; --line:#CBD2D9;
+  --accent:#2347D6; --accent-ink:#FFFFFF; --accent-soft:#DCE3FB;
+  --hot:#C3361D; --good:#1C7848; --warn:#A86300; --bad:#B3271B;
+  --vf-bg:#0A0C0B; --vf-led:#A4E8A7; --vf-dim:#3E5A40;
+  --display:"Saira Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1114; --surface:#161A1F; --sunk:#0B0D10; --ink:#E5E9ED; --muted:#98A2AD; --line:#29303A;
+  --accent:#8BA3FF; --accent-ink:#0E1114; --accent-soft:#1E2747;
+  --hot:#FF6B4E; --good:#4FC587; --warn:#E9AA3C; --bad:#FF6D60; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1114; --surface:#161A1F; --sunk:#0B0D10; --ink:#E5E9ED; --muted:#98A2AD; --line:#29303A;
+  --accent:#8BA3FF; --accent-ink:#0E1114; --accent-soft:#1E2747;
+  --hot:#FF6B4E; --good:#4FC587; --warn:#E9AA3C; --bad:#FF6D60; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:1260px;margin:0 auto;padding-inline:16px;padding-block:14px 56px}
+h1,h2,h3,h4{font-family:var(--display);font-weight:700;letter-spacing:.01em;text-wrap:balance;margin:0;line-height:1.1}
+h2{font-size:30px} h3{font-size:21px} h4{font-size:17px}
+p{margin:0}
+.muted{color:var(--muted)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* header */
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 24px;padding-block:6px 14px}
+.brand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.brand h1{font-size:34px;text-transform:uppercase;letter-spacing:.04em}
+.brand h1 span{color:var(--hot)}
+.rank{display:flex;align-items:center;gap:14px;min-width:0}
+.rank .lvl{font-family:var(--display);font-weight:700;font-size:18px;white-space:nowrap}
+.xpbar{width:180px;max-width:40vw;height:8px;background:var(--sunk);border-radius:4px;overflow:hidden}
+.xpbar i{display:block;height:100%;background:var(--accent);width:0;transition:width .5s}
+.rank small{font-family:var(--mono);color:var(--muted);font-size:12px;white-space:nowrap}
+.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:18px;scrollbar-width:none}
+.tabs button{background:none;border:0;padding:10px 14px;font-family:var(--display);font-weight:600;font-size:17px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--hot)}
+.tabs button:hover{color:var(--ink)}
+
+/* shoot layout */
+.shoot{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:18px;align-items:start}
+@media (max-width:980px){.shoot{grid-template-columns:minmax(0,1fr)}}
+.viewer{position:relative;min-width:0}
+.frame{position:relative;background:#000;border-radius:8px 8px 0 0;overflow:hidden;aspect-ratio:3/2;max-width:100%}
+.frame canvas{width:100%;height:100%;display:block}
+.afpts{position:absolute;inset:0;pointer-events:none}
+.afpts b{position:absolute;width:2.2%;aspect-ratio:1;border:1.5px solid rgba(255,255,255,.35);transform:translate(-50%,-50%);border-radius:1px}
+.afpts b.on{border-color:#ff4a3a;box-shadow:0 0 6px rgba(255,74,58,.7)}
+.blackout{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none}
+.blackout.go{animation:slap .16s linear}
+@keyframes slap{0%{opacity:0}20%{opacity:1}80%{opacity:1}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.blackout.go{animation:none}.xpbar i{transition:none}}
+.vf{background:var(--vf-bg);color:var(--vf-led);font-family:var(--mono);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 16px;padding:9px 16px;border-radius:0 0 8px 8px;font-size:18px;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.vf .blink{animation:blink .6s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+@media (prefers-reduced-motion:reduce){.vf .blink{animation:none;text-decoration:underline wavy}}
+.vf .dim{color:var(--vf-dim)}
+.meter{position:relative;font-size:13px;letter-spacing:.06em;padding-bottom:9px;white-space:nowrap}
+.meter .mk{position:absolute;bottom:0;width:7px;height:6px;background:var(--vf-led);transform:translateX(-50%)}
+.meter .ar{position:absolute;bottom:-3px;font-size:13px}
+.under{display:grid;grid-template-columns:200px minmax(0,1fr) auto;gap:14px;align-items:center;margin-top:12px}
+@media (max-width:640px){.under{grid-template-columns:1fr 1fr}.under .shootbtn{grid-column:1/-1}}
+.hist{width:100%;height:76px;background:var(--surface);border:1px solid var(--line);border-radius:6px;display:block}
+.lab{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px 12px;min-width:0}
+@media (max-width:640px){.lab{grid-template-columns:1fr 1fr}}
+.lab div{min-width:0}
+.lab .k{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-family:var(--display);font-weight:600}
+.lab .v{font-family:var(--mono);font-size:14px;white-space:nowrap}
+.shootbtn{background:var(--hot);color:#fff;border:0;border-radius:999px;padding:14px 26px;font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.shootbtn:active{transform:translateY(1px)}
+.film{display:flex;gap:8px;overflow-x:auto;margin-top:12px;padding-bottom:4px;min-height:20px}
+.film figure{margin:0;flex:0 0 auto;width:120px}
+.film img{width:120px;aspect-ratio:3/2;border-radius:4px;display:block;border:1px solid var(--line)}
+.film figcaption{font-family:var(--mono);font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* controls */
+.controls{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.brief{display:flex;flex-direction:column;gap:6px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.brief ul{margin:4px 0 0;padding-left:18px;font-size:13.5px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:4px 11px;font-size:13px}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.dialrow{display:flex;gap:14px;align-items:center}
+.dial{width:150px;height:150px;flex:0 0 auto;max-width:100%}
+.dial text{font-family:var(--display);font-weight:700;fill:#E9ECEF;cursor:pointer;user-select:none}
+.dial text.sc{fill:#9AA3AD;font-weight:600}
+.dial text.sel{fill:#FF8A70}
+.dialhelp{font-size:13px;min-width:0}
+.maindial{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.btn{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:6px 10px;font-size:13px;font-family:var(--display);font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+.btn:hover{border-color:var(--muted)}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.hint{font-size:12.5px;color:var(--muted)}
+.ctl{display:flex;flex-direction:column;gap:2px}
+.ctl .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.ctl label{font-family:var(--display);font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:13px}
+.ctl output{font-family:var(--mono);font-size:14px}
+.ctl output.auto::after{content:" auto";font-size:10px;color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+input[type=range]:disabled{opacity:.45}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+select{font:inherit;font-size:13.5px;padding:5px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%}
+.toggles{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13.5px}
+.toggles label{display:flex;gap:6px;align-items:center}
+
+/* result card */
+.result{position:absolute;top:12px;left:12px;right:12px;max-height:calc(100% - 24px);overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;box-shadow:0 12px 40px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:10px;z-index:3}
+.stars{font-size:28px;letter-spacing:4px;color:var(--warn)}
+.stars .off{color:var(--line)}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.checks li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:6px;align-items:start;font-size:14px}
+.checks .ic{font-weight:700}
+.checks .ok .ic{color:var(--good)} .checks .no .ic{color:var(--bad)}
+.checks .val{font-family:var(--mono);font-size:12.5px;color:var(--muted);white-space:nowrap}
+.checks .tip{grid-column:2/-1;font-size:13px;color:var(--muted)}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* challenge list */
+.sect{margin-top:30px}
+.sect > .head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:6px;min-width:0}
+button.card:hover{border-color:var(--muted)}
+.card.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.card.locked{opacity:.55;cursor:not-allowed}
+.card .n{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.card .st{color:var(--warn);letter-spacing:2px}
+.card .st .off{color:var(--line)}
+.tag{display:inline-block;font-family:var(--mono);font-size:11px;padding:1px 6px;border-radius:4px;background:var(--sunk);color:var(--muted)}
+
+/* text pages */
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.prose{max-width:68ch;display:flex;flex-direction:column;gap:10px}
+.prose ul,.prose ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+details.card summary{cursor:pointer;font-family:var(--display);font-weight:700;font-size:18px;list-style:none;display:flex;justify-content:space-between;gap:10px}
+details.card summary::-webkit-details-marker{display:none}
+details.card summary::after{content:"+";font-family:var(--mono);color:var(--muted)}
+details.card[open] summary::after{content:"−"}
+details.card .body{display:flex;flex-direction:column;gap:8px;margin-top:8px;font-size:14.5px}
+details.card ol,details.card ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:3px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--display);font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+td.k{font-family:var(--display);font-weight:700;font-size:17px;white-space:nowrap}
+kbd{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;background:var(--bg)}
+.keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.keys .card b{font-family:var(--display);font-size:17px}
+
+/* drills */
+.drill{max-width:720px;display:flex;flex-direction:column;gap:14px}
+.timer{height:6px;background:var(--sunk);border-radius:3px;overflow:hidden}
+.timer i{display:block;height:100%;background:var(--hot);width:100%}
+.q{font-size:20px;font-weight:700;line-height:1.35}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:560px){.opts{grid-template-columns:1fr}}
+.opt{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:12px 14px;text-align:left;font-size:15px}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 14%,var(--surface))}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,var(--surface))}
+.score{display:flex;gap:24px;flex-wrap:wrap}
+.score div .v{font-family:var(--mono);font-size:26px;font-weight:600}
+.explain{font-size:14.5px;border-left:3px solid var(--accent);padding-left:12px}
+
+/* frame game */
+.fgwrap{position:relative;max-width:820px;touch-action:none;user-select:none}
+.fgwrap canvas{width:100%;display:block;border-radius:8px;aspect-ratio:3/2;max-width:100%;cursor:grab}
+
+/* missions */
+.mlist{display:flex;flex-direction:column;gap:10px}
+.mission{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;align-items:start}
+.mission input[type=checkbox]{width:20px;height:20px;margin-top:3px;accent-color:var(--good)}
+.mission textarea{width:100%;min-height:44px;font:inherit;font-size:13.5px;border:1px solid var(--line);border-radius:6px;padding:6px 8px;background:var(--bg);color:var(--ink);resize:vertical}
+.mission.done h4{text-decoration:line-through;text-decoration-color:var(--good)}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.badge{display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:10px;border:1px dashed var(--line);min-width:0}
+.badge.got{border-style:solid;border-color:var(--warn);background:color-mix(in srgb,var(--warn) 10%,var(--surface))}
+.badge b{font-family:var(--display);font-size:16px}
+.badge span{font-size:12.5px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:10px 18px;border-radius:999px;font-size:14px;z-index:20;max-width:calc(100% - 32px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+footer{margin-top:40px;font-size:12.5px;color:var(--muted)}
+
+/* course */
+.learn{display:grid;grid-template-columns:270px minmax(0,1fr);gap:32px;align-items:start}
+@media (max-width:860px){.learn{grid-template-columns:minmax(0,1fr);gap:20px}}
+.course{position:sticky;top:calc(12px + env(safe-area-inset-top,0px));display:flex;flex-direction:column;gap:10px}
+@media (max-width:860px){.course{position:static}}
+.course ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.course button{width:100%;display:grid;grid-template-columns:26px minmax(0,1fr) 16px;gap:8px;align-items:center;text-align:left;background:none;border:0;border-radius:8px;padding:8px 10px;font-size:14.5px}
+.course button:hover{background:var(--surface)}
+.course button[aria-current="true"]{background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);font-weight:700}
+.course .num{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.course .okm{color:var(--good);font-weight:700}
+.cbar{height:6px;background:var(--sunk);border-radius:3px;overflow:hidden}
+.cbar i{display:block;height:100%;background:var(--good);transition:width .4s}
+.lesson{max-width:760px;display:flex;flex-direction:column;gap:24px;min-width:0}
+.lesson .lhead{display:flex;flex-direction:column;gap:8px}
+.lesson .lhead h2{font-size:38px}
+.lesson .learnlist{display:flex;flex-wrap:wrap;gap:6px}
+.read{display:flex;flex-direction:column;gap:12px;font-size:16px;line-height:1.65}
+.read h4{margin-top:8px;font-size:19px}
+.read ul,.read ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:5px}
+.callout{border-left:4px solid var(--hot);background:var(--surface);padding:12px 16px;border-radius:0 8px 8px 0;font-size:16px}
+.callout b.lbl{font-family:var(--display);letter-spacing:.08em;text-transform:uppercase;font-size:13px;display:block;color:var(--hot);margin-bottom:2px}
+.diagram{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;display:flex;flex-direction:column;gap:8px}
+.diagram .cap{font-size:13px;color:var(--muted)}
+.ladder{display:grid;grid-template-columns:84px repeat(5,minmax(58px,1fr));gap:6px;font-family:var(--mono);font-size:14px;min-width:440px}
+.ladder .h{font-family:var(--display);font-weight:600;text-transform:uppercase;font-size:12px;letter-spacing:.06em;color:var(--muted);align-self:center}
+.ladder span{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 4px;text-align:center}
+.swatches{display:grid;grid-template-columns:repeat(3,minmax(90px,1fr));gap:10px;min-width:320px;font-size:13px;text-align:center}
+.swatches div{display:flex;flex-direction:column;gap:4px}
+.swatches i{display:block;height:44px;border-radius:6px;border:1px solid var(--line)}
+.practice{background:var(--accent-soft);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:10px}
+.practice ol{margin:0;padding-left:20px;font-size:14.5px;display:flex;flex-direction:column;gap:3px}
+.t6box{border:1px solid var(--line);border-radius:12px;padding:16px 20px;display:flex;flex-direction:column;gap:8px}
+.t6box ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.lq{display:flex;flex-direction:column;gap:10px}
+.lq .qq{font-weight:700}
+.lnav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:24px minmax(0,1fr);gap:10px;font-size:14px;counter-increment:s}
+.steps li::before{content:counter(s);font-family:var(--mono);font-size:12px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);color:var(--muted)}
+.steps li.done::before{content:"✓";background:var(--good);border-color:var(--good);color:#fff}
+.steps li.cur::before{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.steps li.cur > div > .do{font-weight:700;font-size:15px}
+.steps li.todo{opacity:.45}
+.steps .why{font-size:13.5px;color:var(--ink);margin-top:3px;background:var(--bg);border-radius:6px;padding:6px 9px}
+.steps .live{font-family:var(--mono);font-size:12.5px;color:var(--accent);margin-top:4px}
+.steps .msg{font-size:13px;color:var(--bad);margin-top:4px}
+.hl{outline:2px solid var(--hot);outline-offset:3px;border-radius:6px;animation:hlp 1.4s ease-in-out infinite}
+@keyframes hlp{50%{outline-color:transparent}}
+@media (prefers-reduced-motion:reduce){.hl{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>T6 <span>Field</span> School</h1>
+      <span class="muted">A guided course for getting off Auto on the EOS Rebel T6</span>
+    </div>
+    <div class="rank" title="Earn XP from challenges, drills, the framing game and real-world missions">
+      <div class="lvl" id="lvlName">Green Box</div>
+      <div><div class="xpbar"><i id="xpFill"></i></div><small id="xpText">0 XP</small></div>
+      <small id="streak"></small>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="learn" aria-selected="true">Learn</button>
+    <button role="tab" data-tab="shoot" aria-selected="false">Simulator</button>
+    <button role="tab" data-tab="drills" aria-selected="false">Drills</button>
+    <button role="tab" data-tab="guide" aria-selected="false">T6 Field Guide</button>
+    <button role="tab" data-tab="principles" aria-selected="false">Cheat Sheets</button>
+    <button role="tab" data-tab="missions" aria-selected="false">Missions &amp; Badges</button>
+  </nav>
+
+  <!-- LEARN -->
+  <section id="tab-learn" role="tabpanel">
+    <div class="learn">
+      <aside class="course">
+        <div class="eyebrow">The course</div>
+        <p class="hint">Ten lessons in order. Each one explains an idea, walks you through it in the simulator step by step, then gives you something to try with your real camera.</p>
+        <div class="cbar"><i id="courseBar"></i></div>
+        <small class="mono muted" id="courseCount"></small>
+        <ol id="courseList"></ol>
+      </aside>
+      <article class="lesson" id="lessonView"></article>
+    </div>
+  </section>
+
+  <!-- SHOOT -->
+  <section id="tab-shoot" role="tabpanel" hidden>
+    <div class="shoot">
+      <div class="viewer">
+        <div class="frame" id="frame">
+          <canvas id="cv" width="720" height="480" aria-label="Simulated photo"></canvas>
+          <div class="afpts" id="afpts"></div>
+          <div class="blackout" id="blackout"></div>
+        </div>
+        <div class="vf" id="vf" aria-live="off">
+          <span id="vfT">1/250</span><span id="vfA">5.6</span>
+          <span class="meter" id="vfMeter">-2..1..<b>0</b>..1..+2</span>
+          <span id="vfI">ISO400</span><span id="vfC" class="dim">±0</span>
+        </div>
+        <div class="under">
+          <canvas class="hist" id="hist" width="400" height="152" aria-label="Histogram"></canvas>
+          <div class="lab" id="lab"></div>
+          <button class="shootbtn" id="shootBtn">Shoot</button>
+        </div>
+        <div class="film" id="film" aria-label="Recent shots"></div>
+        <div class="result" id="result" hidden></div>
+      </div>
+
+      <aside class="controls" aria-label="Camera controls">
+        <div class="brief" id="brief"></div>
+        <div class="dialrow">
+          <svg class="dial" id="dial" viewBox="-100 -100 200 200" role="group" aria-label="Mode dial"></svg>
+          <div class="dialhelp">
+            <div class="eyebrow">Mode</div>
+            <div id="modeName" style="font-family:var(--display);font-weight:700;font-size:20px">Av · Aperture priority</div>
+            <p id="modeDesc" class="hint"></p>
+          </div>
+        </div>
+        <div>
+          <div class="maindial">
+            <button class="btn" id="dialL" aria-label="Turn main dial left">◀ Dial</button>
+            <button class="btn" id="dialR" aria-label="Turn main dial right">Dial ▶</button>
+            <button class="btn" id="avBtn" aria-pressed="false">Av± hold</button>
+            <button class="btn" id="isoBtn" aria-pressed="false">ISO</button>
+          </div>
+          <p class="hint" id="dialHint" style="margin-top:6px"></p>
+        </div>
+        <div class="ctl"><div class="row"><label for="sh">Shutter</label><output id="shO"></output></div><input type="range" id="sh" min="-15" max="36" step="1"></div>
+        <div class="ctl"><div class="row"><label for="ap">Aperture</label><output id="apO"></output></div><input type="range" id="ap" min="11" max="27" step="1"></div>
+        <div class="ctl"><div class="row"><label for="iso">ISO</label><output id="isoO"></output></div><input type="range" id="iso" min="0" max="7" step="1"></div>
+        <div class="ctl"><div class="row"><label for="ec">Exposure comp.</label><output id="ecO"></output></div><input type="range" id="ec" min="-15" max="15" step="1"></div>
+        <div class="ctl"><div class="row"><label for="fl">Zoom (kit 18–55)</label><output id="flO"></output></div><input type="range" id="fl" min="18" max="55" step="1"></div>
+        <div class="ctl"><div class="row"><label for="dist" id="distL">Subject distance</label><output id="distO"></output></div><input type="range" id="dist" min="1" max="10" step="0.1"></div>
+        <div class="grid2">
+          <div class="ctl"><label for="meter">Metering</label><select id="meter"><option value="eval">Evaluative</option><option value="partial">Partial (~10%)</option><option value="center">Center-weighted</option></select></div>
+          <div class="ctl"><label for="wb">White balance</label><select id="wb"><option value="AWB">AWB</option><option value="5200">Daylight</option><option value="7000">Shade</option><option value="6000">Cloudy</option><option value="3200">Tungsten</option><option value="4000">White fluor.</option></select></div>
+        </div>
+        <div class="toggles">
+          <label><input type="checkbox" id="autoiso"> Auto ISO</label>
+          <label><input type="checkbox" id="is" checked> Lens IS on</label>
+          <label><input type="checkbox" id="tripod"> Tripod</label>
+        </div>
+        <p class="hint">Keyboard: <kbd>←</kbd> <kbd>→</kbd> main dial, hold <kbd>Shift</kbd> for Av±, <kbd>Space</kbd> to shoot.</p>
+      </aside>
+    </div>
+
+    <div class="sect">
+      <div class="head"><h2>Challenges</h2><p class="muted">Each one teaches a single skill. Finish one to unlock the next. Up to three stars each.</p></div>
+      <div class="cgrid" id="clist"></div>
+    </div>
+    <div class="sect">
+      <div class="head"><h2>Free shoot</h2><p class="muted">Pick a scene and experiment. Every shot gets a report.</p></div>
+      <div class="chips" id="scenes"></div>
+    </div>
+  </section>
+
+  <!-- DRILLS -->
+  <section id="tab-drills" role="tabpanel" hidden>
+    <div class="drill">
+      <div class="prose">
+        <h2>Stop Drill</h2>
+        <p class="muted">60 seconds of rapid-fire questions: stop math, which mode to use, and where things live on your T6. Right answers build a streak multiplier. A wrong answer pauses the clock and shows you why.</p>
+      </div>
+      <div class="score">
+        <div><div class="eyebrow">Score</div><div class="v" id="dScore">0</div></div>
+        <div><div class="eyebrow">Streak</div><div class="v" id="dStreak">×1</div></div>
+        <div><div class="eyebrow">Best</div><div class="v" id="dBest">0</div></div>
+        <div><div class="eyebrow">Time</div><div class="v" id="dTime">60</div></div>
+      </div>
+      <div class="timer"><i id="dBar"></i></div>
+      <div id="dStage" class="card" style="padding:20px;gap:14px">
+        <p class="q">Ready? Questions mix exposure math, mode choice and T6 buttons.</p>
+        <div class="actions"><button class="btn primary" id="dStart">Start drill</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GUIDE -->
+  <section id="tab-guide" role="tabpanel" hidden>
+    <div class="prose" style="margin-bottom:18px">
+      <h2>Your T6, mapped</h2>
+      <p class="muted">Everything here refers to the stock Rebel T6 (EOS 1300D) with the EF-S 18–55mm kit lens. Menu names can vary slightly by firmware, so keep the printed manual handy for edge cases.</p>
+    </div>
+
+    <h3 style="margin-bottom:10px">The mode dial</h3>
+    <div class="tablewrap" style="margin-bottom:24px"><table>
+      <thead><tr><th>Mode</th><th>You set</th><th>Camera sets</th><th>Main dial does</th><th>Reach for it when</th></tr></thead>
+      <tbody>
+        <tr><td class="k">A+</td><td>Nothing</td><td>Everything, including ISO and flash</td><td>Nothing</td><td>You hand the camera to someone else</td></tr>
+        <tr><td class="k">P</td><td>ISO, exposure comp, WB, metering, AF</td><td>Shutter and aperture together</td><td>Program shift: same exposure, different shutter/aperture pair</td><td>Snapshots where you still want control of ISO and color</td></tr>
+        <tr><td class="k">Tv</td><td>Shutter speed</td><td>Aperture</td><td>Shutter speed</td><td>Motion matters: sports, kids, pets, water, panning</td></tr>
+        <tr><td class="k">Av</td><td>Aperture</td><td>Shutter speed</td><td>Aperture</td><td>Depth of field matters: portraits, landscapes, close-ups. Most pros live here.</td></tr>
+        <tr><td class="k">M</td><td>Shutter, aperture, ISO</td><td>Nothing (the meter only advises)</td><td>Shutter. Hold <b>Av±</b> + dial for aperture</td><td>Light is steady or tricky: night, studio, snow, backlight, panoramas</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 style="margin-bottom:10px">Where the controls live</h3>
+    <div class="keys" style="margin-bottom:24px">
+      <div class="card"><b>Main dial</b><p>Behind the shutter button. Changes the primary setting for the mode you are in (see table).</p></div>
+      <div class="card"><b>Shutter button</b><p>Half-press to focus and meter; the readout stays alive a few seconds after you let go. Full press to shoot.</p></div>
+      <div class="card"><b>ISO button</b><p>On top, just behind the main dial. Press, then turn the dial. ISO steps in full stops: 100, 200, 400 … 6400, plus H (12800) once it's enabled in the custom functions.</p></div>
+      <div class="card"><b>Av± button</b><p>Beside the LCD, top right. Hold it and turn the dial: exposure compensation in P/Tv/Av, aperture in M.</p></div>
+      <div class="card"><b>Q button</b><p>Opens the Quick Control screen: metering, AF mode, drive, WB, Picture Style and image quality in one place.</p></div>
+      <div class="card"><b>✱ (AE lock)</b><p>Top right on the back. Locks exposure so you can meter one spot and recompose. An asterisk appears in the viewfinder.</p></div>
+      <div class="card"><b>AF point button</b><p>Next to ✱. Press it, then use the dial or cross keys to choose one of the 9 AF points. SET jumps back to the center point.</p></div>
+      <div class="card"><b>Cross keys</b><p>▲ White balance · ◀ Drive (single, continuous, 10 s / 2 s timer) · ▶ AF operation (One Shot, AI Focus, AI Servo) · ▼ Picture Style.</p></div>
+      <div class="card"><b>Lens switches</b><p><b>AF/MF</b> for manual focus. <b>STABILIZER ON/OFF</b>: on when handheld, off on a tripod.</p></div>
+    </div>
+
+    <h3 style="margin-bottom:10px">Recipes: how to do it on the T6</h3>
+    <div class="cols" style="margin-bottom:24px" id="recipes"></div>
+
+    <h3 style="margin-bottom:10px">Scene mode translator</h3>
+    <p class="muted" style="margin-bottom:10px;max-width:68ch">Each scene icon on the dial is a preset recipe. Here is what it is doing, so you can do it yourself and then push further.</p>
+    <div class="tablewrap" style="margin-bottom:24px"><table>
+      <thead><tr><th>Scene mode</th><th>What it does</th><th>Do it yourself</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Portrait</td><td>Opens the aperture, soft skin Picture Style, continuous drive</td><td>Av, smallest f-number, zoom to 55mm, step closer, Picture Style: Portrait</td></tr>
+        <tr><td class="k">Landscape</td><td>Smaller aperture, punchy blues and greens</td><td>Av f/8–f/11, 18mm, focus a third into the scene, Picture Style: Landscape</td></tr>
+        <tr><td class="k">Close-up</td><td>Mid aperture, closest focus</td><td>Av f/8, 55mm, get as close as the lens will focus (about 0.25 m)</td></tr>
+        <tr><td class="k">Sports</td><td>Fast shutter, AI Servo, continuous drive</td><td>Tv 1/1000, ▶ AI Servo, ◀ Continuous, Auto ISO</td></tr>
+        <tr><td class="k">CA</td><td>"Background blur" and "brightness" sliders</td><td>They are aperture and exposure compensation. Use Av and Av±</td></tr>
+        <tr><td class="k">Flash off</td><td>A+ with the pop-up flash disabled</td><td>P with the flash down and Auto ISO</td></tr>
+        <tr><td class="k">Night portrait</td><td>Flash for the person, slow shutter for the background</td><td>M, 1/30, f/4, ISO 800, pop the flash: the shutter controls the background, the flash the subject</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 style="margin-bottom:10px">Specs that change how you shoot</h3>
+    <div class="tablewrap"><table>
+      <tbody>
+        <tr><td class="k">Sensor</td><td>18 MP APS-C, 1.6× crop. Your 18–55 frames like a 29–88 on full frame. Hand-holding rule: 1/(focal × 1.6).</td></tr>
+        <tr><td class="k">Shutter</td><td>30 s to 1/4000, plus Bulb (M mode, turn the dial past 30"). Flash sync up to 1/200.</td></tr>
+        <tr><td class="k">ISO</td><td>100–6400, H = 12800. Above 1600 noise becomes visible; 3200 is fine for small prints and the web.</td></tr>
+        <tr><td class="k">Autofocus</td><td>9 points, the center one is cross-type and the most reliable in low light.</td></tr>
+        <tr><td class="k">Metering</td><td>Evaluative, Partial (about 10% at center), Center-weighted. No spot meter: Partial is your precision tool.</td></tr>
+        <tr><td class="k">Drive</td><td>About 3 frames per second continuous.</td></tr>
+        <tr><td class="k">Viewfinder</td><td>About 95% coverage: the photo shows a little more around the edges than you saw.</td></tr>
+        <tr><td class="k">Exposure comp.</td><td>±5 stops in ⅓-stop steps (the viewfinder scale shows ±2).</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- PRINCIPLES -->
+  <section id="tab-principles" role="tabpanel" hidden>
+    <div class="prose" style="margin-bottom:18px">
+      <h2>The principles under every photo</h2>
+      <p class="muted">Short lessons with something to try. The Shoot tab is where you test them.</p>
+    </div>
+    <div class="cols" id="lessons"></div>
+
+    <div class="sect">
+      <div class="head"><h2>Equivalent exposures</h2><p class="muted">Same brightness, different picture. Trade aperture against shutter and watch what you gain and lose.</p></div>
+      <div class="card" style="gap:12px;max-width:820px">
+        <p>Start: <span class="mono">1/125 · f/8 · ISO 100</span> in bright sun.</p>
+        <div class="grid2">
+          <div class="ctl"><div class="row"><label for="eqA">Aperture</label><output id="eqAO"></output></div><input type="range" id="eqA" min="0" max="6" step="1" value="3"></div>
+          <div class="ctl"><div class="row"><label for="eqI">ISO</label><output id="eqIO"></output></div><input type="range" id="eqI" min="0" max="6" step="1" value="0"></div>
+        </div>
+        <div class="score">
+          <div><div class="eyebrow">Shutter needed</div><div class="v" id="eqT">1/125</div></div>
+          <div><div class="eyebrow">Depth of field</div><div class="v" style="font-size:18px" id="eqD"></div></div>
+          <div><div class="eyebrow">Motion</div><div class="v" style="font-size:18px" id="eqM"></div></div>
+          <div><div class="eyebrow">Noise</div><div class="v" style="font-size:18px" id="eqN"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sect">
+      <div class="head"><h2>Frame It</h2><p class="muted">Drag the frame to compose. Scored on the rule of thirds, a level horizon line on a third, and leaving room in front of moving subjects. Three rounds.</p></div>
+      <div class="fgwrap"><canvas id="fg" width="720" height="480" aria-label="Composition game"></canvas></div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:10px;max-width:820px">
+        <div class="ctl" style="flex:1 1 200px"><div class="row"><label for="fgSize">Zoom the frame</label><output id="fgSizeO"></output></div><input type="range" id="fgSize" min="40" max="80" value="55"></div>
+        <button class="btn primary" id="fgShoot">Take the shot</button>
+        <span id="fgRound" class="mono muted"></span>
+      </div>
+      <p id="fgMsg" class="explain" style="margin-top:10px;max-width:820px">Round 1 of 3. Place the subject on a third and the horizon on a third line.</p>
+    </div>
+  </section>
+
+  <!-- MISSIONS -->
+  <section id="tab-missions" role="tabpanel" hidden>
+    <div class="prose" style="margin-bottom:18px">
+      <h2>Field missions</h2>
+      <p class="muted">The simulator builds the instinct; these build it with your actual camera. Do one or two a week, tick them off and jot what you learned. Each mission is worth 40 XP.</p>
+    </div>
+    <div id="mlist" class="mlist"></div>
+    <div class="sect">
+      <div class="head"><h2>Badges</h2><p class="muted" id="statLine"></p></div>
+      <div class="badges" id="badges"></div>
+    </div>
+    <div class="sect">
+      <div class="actions" id="resetZone"><button class="btn" id="resetBtn">Reset all progress</button></div>
+    </div>
+  </section>
+
+  <footer>Unofficial study tool, not affiliated with Canon. Simulation values are simplified to make the lessons visible on screen. Progress is saved in this browser only.</footer>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(()=>{
+"use strict";
+// ---------- constants ----------
+const W=720,H=480,P=48,PW=W+2*P,PH=H+2*P,DOF_K=2.2;
+const SH=['30"','25"','20"','15"','13"','10"','8"','6"','5"','4"','3.2"','2.5"','2"','1.6"','1.3"','1"','0.8"','0.6"','0.5"','0.4"','0.3"','1/4','1/5','1/6','1/8','1/10','1/13','1/15','1/20','1/25','1/30','1/40','1/50','1/60','1/80','1/100','1/125','1/160','1/200','1/250','1/320','1/400','1/500','1/640','1/800','1/1000','1/1250','1/1600','1/2000','1/2500','1/3200','1/4000'];
+const AP=['3.5','4','4.5','5','5.6','6.3','7.1','8','9','10','11','13','14','16','18','20','22'];
+const ISO=['100','200','400','800','1600','3200','6400','H'];
+const NOISE_SIG=[0.5,0.9,1.7,3,5,8,12,18];
+const shL=k=>SH[k+15], apL=k=>AP[k-11];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function thirds(x){const n=Math.round(Math.abs(x)*3),w=Math.floor(n/3),r=n%3;return (w?w:'')+(r===1?'⅓':r===2?'⅔':'')||'0';}
+function sgnThirds(x){return (x>0.01?'+':x<-0.01?'−':'±')+thirds(x);}
+
+// ---------- storage ----------
+const KEY='t6-field-school-v1';
+const blank=()=>({xp:0,best:{},badges:{},missions:{},notes:{},drillBest:0,frameBest:0,shots:0,streak:{last:'',count:0},tab:'learn',lessons:{},quiz:{},cur:0});
+let S=blank();
+try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(blank(),JSON.parse(raw));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+// ---------- XP + levels ----------
+const LV=[0,80,200,380,600,880,1220,1620,2100];
+const LVN=['Green Box','Scene Hopper','P for Practice','Aperture Apprentice','Shutter Wrangler','Meter Reader','Manual Operator','Light Chaser','Full Manual'];
+function level(xp){let i=0;while(i<LV.length-1&&xp>=LV[i+1])i++;return i;}
+function today(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function addXP(n,why){
+  if(n<=0)return;
+  const before=level(S.xp);S.xp+=n;
+  const t=today();
+  if(S.streak.last!==t){const y=new Date();y.setDate(y.getDate()-1);const ys=y.getFullYear()+'-'+(y.getMonth()+1)+'-'+y.getDate();S.streak.count=S.streak.last===ys?S.streak.count+1:1;S.streak.last=t;}
+  if(S.streak.count>=3)award('streak3');
+  save();renderRank();
+  const after=level(S.xp);
+  toast(after>before?`Level up: ${LVN[after]}! (+${n} XP)`:`+${n} XP${why?' · '+why:''}`);
+}
+function renderRank(){
+  const l=level(S.xp);
+  document.getElementById('lvlName').textContent=LVN[l];
+  const lo=LV[l],hi=LV[l+1];
+  document.getElementById('xpFill').style.width=(hi?((S.xp-lo)/(hi-lo)*100):100)+'%';
+  document.getElementById('xpText').textContent=hi?`${S.xp} / ${hi} XP`:`${S.xp} XP · max rank`;
+  document.getElementById('streak').textContent=S.streak.count>1?`${S.streak.count}-day streak`:'';
+}
+let toastT;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2600);}
+
+const BADGES=[
+  ['creative','Off the green box','Take a shot in P, Tv, Av or M'],
+  ['bokeh','Bokeh hunter','Background blur of 20 px or more, well exposed'],
+  ['frozen','Frozen','Stop a moving subject to under 0.5 px of blur'],
+  ['owl','Night owl','A sharp exposure of 4 seconds or longer'],
+  ['whisper','Meter whisperer','Nail exposure exactly in M mode'],
+  ['wbfix','Color corrector','Fix the lamp-light color cast'],
+  ['drill','Drill sergeant','Score 150+ in the Stop Drill'],
+  ['composer','Composer','Average 85+ in Frame It'],
+  ['field5','Field ready','Complete 5 field missions'],
+  ['allstar','Full manual','Three stars on every challenge'],
+  ['streak3','Habit','Practice three days in a row'],
+];
+function award(id){if(S.badges[id])return;S.badges[id]=1;save();const b=BADGES.find(x=>x[0]===id);setTimeout(()=>toast(`Badge earned: ${b[1]}`),900);renderBadges();}
+
+// ---------- drawing helpers ----------
+function R(seed){let s=(seed>>>0)||1;return()=>{s=(Math.imul(s,1664525)+1013904223)>>>0;return s/4294967296;};}
+function rr(c,x,y,w,h,r){r=Math.min(r,w/2,h/2);c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
+function frr(c,x,y,w,h,r,col){rr(c,x,y,w,h,r);c.fillStyle=col;c.fill();}
+function circ(c,x,y,r,col){c.beginPath();c.arc(x,y,Math.max(0.1,r),0,Math.PI*2);c.fillStyle=col;c.fill();}
+function ell(c,x,y,rx,ry,col,rot=0){c.beginPath();c.ellipse(x,y,rx,ry,rot,0,Math.PI*2);c.fillStyle=col;c.fill();}
+function lg(c,y0,y1,st){const g=c.createLinearGradient(0,y0,0,y1);st.forEach(s=>g.addColorStop(s[0],s[1]));return g;}
+function sky(c,st){c.fillStyle=lg(c,0,H,st);c.fillRect(-500,-500,W+1000,H+1000);}
+function ridge(c,y,amp,fr,col,seed,bottom=H+500){const r=R(seed),p1=r()*6,p2=r()*6;c.beginPath();c.moveTo(-500,bottom);for(let x=-500;x<=W+500;x+=6){c.lineTo(x,y+Math.sin(x*fr+p1)*amp+Math.sin(x*fr*2.7+p2)*amp*.35);}c.lineTo(W+500,bottom);c.closePath();c.fillStyle=col;c.fill();}
+function line(c,a,b,col,w){c.beginPath();c.moveTo(a[0],a[1]);c.lineTo(b[0],b[1]);c.strokeStyle=col;c.lineWidth=w;c.lineCap='round';c.stroke();}
+function tree(c,x,y,s,r,pal){c.fillStyle='#4a3826';c.fillRect(x-s*.07,y-s*.3,s*.14,s*1.1);for(let i=0;i<6;i++)circ(c,x+(r()-.5)*s*1.1,y-s*.55+(r()-.5)*s*.8,s*(.32+r()*.28),pal[Math.floor(r()*pal.length)]);}
+function pine(c,x,y,s,col,snow){for(let i=0;i<3;i++){const yy=y-i*s*.45,w=s*(.55-i*.13);c.beginPath();c.moveTo(x-w,yy);c.lineTo(x,yy-s*.75);c.lineTo(x+w,yy);c.closePath();c.fillStyle=col;c.fill();if(snow){c.beginPath();c.moveTo(x-w*.45,yy-s*.42);c.lineTo(x,yy-s*.75);c.lineTo(x+w*.45,yy-s*.42);c.closePath();c.fillStyle=snow;c.fill();}}c.fillStyle='#3a2a1c';c.fillRect(x-s*.05,y,s*.1,s*.2);}
+function person(c,x,feet,h,o){
+  const u=h/8;
+  ell(c,x-.45*u,feet,.5*u,.18*u,'#1b1b1e');ell(c,x+.45*u,feet,.5*u,.18*u,'#1b1b1e');
+  frr(c,x-.85*u,feet-3.9*u,.75*u,3.85*u,.25*u,o.bottom);frr(c,x+.1*u,feet-3.9*u,.75*u,3.85*u,.25*u,o.bottom);
+  frr(c,x-1.7*u,feet-6.5*u,.55*u,2.9*u,.27*u,o.top);frr(c,x+1.15*u,feet-6.5*u,.55*u,2.9*u,.27*u,o.top);
+  frr(c,x-1.25*u,feet-6.75*u,2.5*u,3.15*u,.7*u,o.top);
+  circ(c,x-1.42*u,feet-3.55*u,.3*u,o.skin);circ(c,x+1.42*u,feet-3.55*u,.3*u,o.skin);
+  c.fillStyle=o.skin;c.fillRect(x-.25*u,feet-7.1*u,.5*u,.5*u);
+  if(o.scarf)frr(c,x-.75*u,feet-6.95*u,1.5*u,.45*u,.2*u,o.scarf);
+  ell(c,x,feet-7.5*u,.56*u,.68*u,o.skin);
+  c.beginPath();c.ellipse(x,feet-7.7*u,.62*u,.55*u,0,Math.PI,Math.PI*2);c.fillStyle=o.hair;c.fill();
+  if(o.hat){c.beginPath();c.ellipse(x,feet-7.85*u,.64*u,.6*u,0,Math.PI,Math.PI*2);c.fillStyle=o.hat;c.fill();circ(c,x,feet-8.45*u,.18*u,o.hat);}
+  circ(c,x-.2*u,feet-7.5*u,.07*u,'#1a1210');circ(c,x+.2*u,feet-7.5*u,.07*u,'#1a1210');
+  line(c,[x-.15*u,feet-7.1*u],[x+.15*u,feet-7.1*u],'#8a4a3a',.06*u);
+}
+function cyclist(c,x,y,s){
+  const rh=[x-1.55*s,y-s],fh=[x+1.55*s,y-s],bb=[x-.15*s,y-.95*s],st=[x-.65*s,y-2.45*s],ht=[x+1.15*s,y-2.5*s];
+  for(const w of [rh,fh]){c.beginPath();c.arc(w[0],w[1],.95*s,0,Math.PI*2);c.strokeStyle='#1d1d1f';c.lineWidth=.16*s;c.stroke();for(let i=0;i<8;i++){const a=i*Math.PI/4;line(c,w,[w[0]+Math.cos(a)*.88*s,w[1]+Math.sin(a)*.88*s],'#aab0b6',.035*s);}circ(c,w[0],w[1],.1*s,'#555');}
+  const fc='#1f6fb5',fw=.13*s;line(c,rh,bb,fc,fw);line(c,bb,st,fc,fw);line(c,st,rh,fc,fw);line(c,bb,ht,fc,fw);line(c,st,ht,fc,fw);line(c,ht,fh,fc,fw);
+  line(c,[st[0]-.3*s,st[1]-.1*s],[st[0]+.25*s,st[1]-.1*s],'#222',.14*s);
+  line(c,[ht[0],ht[1]],[ht[0]+.35*s,ht[1]-.15*s],'#222',.1*s);
+  line(c,[st[0],st[1]-.15*s],[x+.25*s,y-1.85*s],'#252528',.3*s);line(c,[x+.25*s,y-1.85*s],[bb[0]+.3*s,bb[1]+.3*s],'#252528',.26*s);
+  line(c,[st[0],st[1]-.15*s],[x-.15*s,y-1.6*s],'#1a1a1c',.3*s);line(c,[x-.15*s,y-1.6*s],[bb[0]-.35*s,bb[1]-.2*s],'#1a1a1c',.26*s);
+  line(c,[st[0],st[1]-.15*s],[x+.55*s,y-3.75*s],'#d8452b',.55*s);
+  line(c,[x+.55*s,y-3.7*s],[ht[0]+.3*s,ht[1]-.15*s],'#d8452b',.2*s);
+  circ(c,x+.98*s,y-4.2*s,.36*s,'#c9906c');
+  c.beginPath();c.ellipse(x+.95*s,y-4.32*s,.44*s,.3*s,-.2,Math.PI,Math.PI*2);c.fillStyle='#f4f4f4';c.fill();
+  circ(c,x+1.18*s,y-4.18*s,.05*s,'#111');
+}
+function cat(c,x,y,s){
+  c.beginPath();c.moveTo(x+1.2*s,y-.5*s);c.quadraticCurveTo(x+2.3*s,y-.6*s,x+2.0*s,y-1.7*s);c.strokeStyle='#4a4440';c.lineWidth=.22*s;c.lineCap='round';c.stroke();
+  ell(c,x+.3*s,y-.62*s,1.12*s,.6*s,'#4a4440');
+  ell(c,x+.9*s,y-.15*s,.25*s,.14*s,'#4a4440');ell(c,x-.1*s,y-.12*s,.25*s,.14*s,'#4a4440');
+  ell(c,x-.5*s,y-.62*s,.42*s,.46*s,'#ece5da');
+  ell(c,x-1.22*s,y-.28*s,.24*s,.15*s,'#ece5da',-.4);
+  circ(c,x-.78*s,y-1.38*s,.5*s,'#4a4440');
+  for(const d of [-1,1]){c.beginPath();c.moveTo(x-.78*s+d*.45*s,y-1.6*s);c.lineTo(x-.78*s+d*.32*s,y-2.05*s);c.lineTo(x-.78*s+d*.08*s,y-1.82*s);c.closePath();c.fillStyle='#4a4440';c.fill();}
+  ell(c,x-.98*s,y-1.45*s,.11*s,.13*s,'#a6d04f');ell(c,x-.58*s,y-1.45*s,.11*s,.13*s,'#a6d04f');
+  ell(c,x-.98*s,y-1.45*s,.035*s,.1*s,'#111');ell(c,x-.58*s,y-1.45*s,.035*s,.1*s,'#111');
+  circ(c,x-.78*s,y-1.24*s,.06*s,'#e0909a');
+  for(const d of [-1,1])for(const k of [-.04,.06]){line(c,[x-.78*s+d*.12*s,y-1.2*s],[x-.78*s+d*.7*s,y-(1.24+k*3)*s],'rgba(255,255,255,.7)',.018*s);}
+  circ(c,x-1.68*s,y-.2*s,.18*s,'#3aa0d8');line(c,[x-1.68*s,y-.38*s],[x-1.6*s,y-.02*s],'#f2d24b',.04*s);
+}
+
+// ---------- scenes ----------
+const SCENES={
+  park:{name:'Park portrait',light:'Open shade',ev:13,K:6800,bias:{},follow:true,dist:3,range:[1,10],bgDist:25,speed:0,sRef:3,anchor:[360,440],
+    bg(c){sky(c,[[0,'#8fbbe3'],[.55,'#dcebf3']]);const r=R(7);ridge(c,250,10,.012,'#7aa087',3);
+      for(let x=-120;x<W+120;x+=34)tree(c,x+r()*20,262,28+r()*22,r,['#3e6d3c','#4f7f45','#2f5a33','#5d8c4c']);
+      c.fillStyle=lg(c,280,H,[[0,'#8db767'],[1,'#557f3d']]);c.fillRect(-500,282,W+1000,H+600);
+      c.beginPath();c.moveTo(300,285);c.bezierCurveTo(340,340,180,400,90,H+300);c.lineTo(470,H+300);c.bezierCurveTo(440,400,360,340,330,285);c.closePath();c.fillStyle='#d9c9a5';c.fill();
+      c.globalAlpha=.35;for(let i=0;i<46;i++)circ(c,-60+r()*(W+120),170+r()*100,3+r()*6,'#fbf6cf');c.globalAlpha=1;},
+    subject(c){person(c,360,440,270,{skin:'#c58c68',hair:'#3a2a20',top:'#2f5d8a',bottom:'#2b2b33',scarf:'#d6a33a'});}},
+  path:{name:'Cyclist on the path',light:'Full sun',ev:15,K:5300,bias:{},follow:true,dist:8,range:[3,20],bgDist:40,speed:6,sRef:8,anchor:[360,405],
+    bg(c){sky(c,[[0,'#4f93dc'],[.5,'#cfe3f2']]);const r=R(11);
+      for(let x=-200;x<W+200;){const w=40+r()*70,h=40+r()*70;c.fillStyle=['#b8c6d4','#a9b8c8','#c7d2dd'][Math.floor(r()*3)];c.fillRect(x,250-h,w,h+20);x+=w+4;}
+      for(let x=-120;x<W+120;x+=46)tree(c,x+r()*20,282,26+r()*20,r,['#4b7d3a','#3a6b30','#5e9046']);
+      c.fillStyle=lg(c,290,H,[[0,'#9cc46e'],[1,'#6f9a4a']]);c.fillRect(-500,295,W+1000,H+600);
+      c.fillStyle='#6a6e73';c.fillRect(-500,372,W+1000,62);c.fillStyle='#8b8f94';c.fillRect(-500,370,W+1000,4);c.fillRect(-500,432,W+1000,4);
+      c.fillStyle='#f4f1e4';for(let x=-500;x<W+500;x+=60)c.fillRect(x,401,30,4);
+      for(let x=-40;x<W+60;x+=70){c.fillStyle='#7a5a3a';c.fillRect(x,345,6,30);}c.fillStyle='#7a5a3a';c.fillRect(-500,350,W+1000,4);},
+    subject(c){cyclist(c,360,405,34);}},
+  lake:{name:'Mountain lake',light:'Hazy sun',ev:14,K:5600,bias:{},follow:false,subjDist:10,dist:10,range:[0.5,30],bgDist:Infinity,fgDist:1.5,speed:0,sRef:10,anchor:[360,360],
+    bg(c){sky(c,[[0,'#6fa8e2'],[.45,'#d7e7f3']]);
+      c.save();ridge(c,200,55,.009,'#76869f',5,330);c.beginPath();c.rect(-500,-500,W+1000,665);c.clip();ridge(c,200,55,.009,'#f2f5f8',5,330);c.restore();
+      ridge(c,236,22,.02,'#5b6b7f',9,330);ridge(c,262,12,.035,'#2f4f3a',13,330);
+      const r=R(4);for(let x=-200;x<W+200;x+=14)pine(c,x+r()*8,268+r()*6,20+r()*14,'#264233');
+      c.fillStyle=lg(c,280,370,[[0,'#7aa3c6'],[1,'#3f6f96']]);c.fillRect(-500,280,W+1000,100);
+      c.globalAlpha=.35;for(let i=0;i<30;i++){c.fillStyle='#e8f1f8';c.fillRect(-200+r()*(W+400),285+r()*80,20+r()*60,1.5);}c.globalAlpha=1;
+      c.fillStyle=lg(c,360,H,[[0,'#7d8c55'],[1,'#56683a']]);c.fillRect(-500,362,W+1000,H+600);},
+    subject(c){ell(c,250,372,60,22,'#8a8a86');ell(c,300,368,40,16,'#9d9c96');ell(c,520,375,46,18,'#7f7f7b');
+      c.beginPath();c.moveTo(380,372);c.quadraticCurveTo(440,388,500,372);c.lineTo(492,364);c.lineTo(388,364);c.closePath();c.fillStyle='#c5432e';c.fill();line(c,[400,366],[480,366],'#7a2a1d',2);
+      const r=R(21);tree(c,600,350,40,r,['#3a6b30','#2d5a28']);},
+    fg(c){const r=R(33);for(let i=0;i<70;i++){const x=-80+r()*(W+160),top=H-30-r()*90;line(c,[x,H+40],[x+(r()-.5)*20,top],'#4a7232',3+r()*2);
+      if(r()<.6)circ(c,x+(r()-.5)*10,top,6+r()*7,['#f2c94c','#f1ecf7','#d9534f','#f6a6c1','#b18de0'][Math.floor(r()*5)]);}}},
+  room:{name:'Living room cat',light:'Lamp light',ev:6,K:2900,bias:{},follow:true,dist:2.5,range:[1,6],bgOffset:2.5,speed:.4,sRef:2.5,anchor:[360,438],
+    bg(c){c.fillStyle=lg(c,0,360,[[0,'#d8c3a0'],[1,'#bda37d']]);c.fillRect(-500,-500,W+1000,860);
+      frr(c,100,80,160,120,4,'#5a3f2b');c.fillStyle=lg(c,92,190,[[0,'#7aa6c9'],[.6,'#e8c27a'],[1,'#5f7a4a']]);c.fillRect(110,90,140,100);
+      const g=c.createRadialGradient(600,210,10,600,210,230);g.addColorStop(0,'rgba(255,236,190,.95)');g.addColorStop(1,'rgba(255,236,190,0)');c.fillStyle=g;c.fillRect(300,-100,600,600);
+      c.beginPath();c.moveTo(565,170);c.lineTo(635,170);c.lineTo(655,235);c.lineTo(545,235);c.closePath();c.fillStyle='#f6e7bf';c.fill();c.fillStyle='#3b2b20';c.fillRect(597,235,6,110);ell(c,600,345,30,8,'#3b2b20');
+      frr(c,300,232,240,118,24,'#7a4e3a');frr(c,288,300,264,70,18,'#6a4231');frr(c,320,262,95,48,14,'#8d5c45');frr(c,425,262,95,48,14,'#8d5c45');
+      c.fillStyle=lg(c,360,H,[[0,'#8a6544'],[1,'#5e4129']]);c.fillRect(-500,362,W+1000,H+600);
+      c.strokeStyle='rgba(40,25,15,.35)';c.lineWidth=1.5;for(let y=380;y<H+60;y+=24){c.beginPath();c.moveTo(-500,y);c.lineTo(W+500,y);c.stroke();}
+      ell(c,360,445,250,46,'#9d3a37');ell(c,360,445,200,34,'#b8534b');ell(c,360,445,140,22,'#9d3a37');},
+    subject(c){cat(c,380,438,58);}},
+  night:{name:'City at night',light:'Streetlights',ev:3,K:3400,bias:{},follow:false,subjDist:60,dist:60,range:[5,100],bgDist:Infinity,speed:0,sRef:60,anchor:[360,390],lights:true,
+    bg(c){sky(c,[[0,'#04070f'],[.7,'#1b2242'],[1,'#3a2f4a']]);const r=R(8);c.globalAlpha=.8;for(let i=0;i<30;i++)circ(c,r()*W,r()*180,.8,'#cfd8ff');c.globalAlpha=1;circ(c,600,70,16,'#e8e8f0');},
+    subject(c){const r=R(17);
+      for(let x=-200;x<W+200;){const w=50+r()*70,h=120+r()*190;c.fillStyle=['#141826','#1a1f30','#101421'][Math.floor(r()*3)];c.fillRect(x,390-h,w,h);
+        for(let wy=390-h+12;wy<380;wy+=16)for(let wx=x+8;wx<x+w-10;wx+=13)if(r()<.33){c.fillStyle=r()<.8?'#ffd27a':'#cfe3ff';c.fillRect(wx,wy,7,9);}x+=w+6;}
+      c.fillStyle='#15161b';c.fillRect(-500,390,W+1000,H+600);c.fillStyle='#2a2b31';c.fillRect(-500,390,W+1000,5);c.fillRect(-500,438,W+1000,4);
+      for(let x=40;x<W;x+=170){line(c,[x,392],[x,300],'#30333c',4);line(c,[x,300],[x+18,296],'#30333c',4);
+        const g=c.createRadialGradient(x+18,300,1,x+18,300,40);g.addColorStop(0,'rgba(255,214,140,1)');g.addColorStop(.25,'rgba(255,190,110,.5)');g.addColorStop(1,'rgba(255,190,110,0)');c.fillStyle=g;c.fillRect(x-30,250,100,110);
+        c.fillStyle='rgba(255,200,120,.12)';c.fillRect(x-5,395,46,90);}},
+    lights(c,t){const lanes=[{y:410,dir:1,v:290,col:'#fff4dc',xs:[40,230,470,610]},{y:426,dir:-1,v:250,col:'#ff3b2f',xs:[120,380,560,700]}];
+      for(const L of lanes)for(const x0 of L.xs){const len=Math.min(L.v*t,W+200);const x1=x0+L.dir*len;
+        for(const [w,a] of [[10,.18],[3,1]]){c.globalAlpha=a;c.beginPath();c.moveTo(x0,L.y);c.lineTo(len<1.5?x0+.5*L.dir:x1,L.y);c.strokeStyle=L.col;c.lineWidth=w;c.lineCap='round';c.stroke();}
+        if(len>W){c.globalAlpha=.8;c.beginPath();c.moveTo(x1-W*L.dir*1.5,L.y);c.lineTo(x0,L.y);c.lineWidth=3;c.stroke();}}
+      c.globalAlpha=1;}},
+  snow:{name:'Snow day',light:'Bright snow',ev:15,K:6500,bias:{eval:1.7,center:1.7,partial:1.4},follow:true,dist:5,range:[2,15],bgDist:40,speed:0,sRef:5,anchor:[360,420],
+    bg(c){sky(c,[[0,'#c9d5e2'],[.6,'#eef2f6']]);ridge(c,240,18,.012,'#dfe7ef',2);const r=R(12);
+      for(let x=-160;x<W+160;x+=26)pine(c,x+r()*14,282+r()*8,34+r()*26,'#2c4535','#eef3f7');
+      c.fillStyle=lg(c,300,H,[[0,'#eef3f8'],[1,'#f6f8fb']]);c.fillRect(-500,300,W+1000,H+600);
+      c.globalAlpha=.5;for(let i=0;i<14;i++)ell(c,-100+r()*(W+200),330+r()*150,60+r()*80,6+r()*6,'#d6dfea');c.globalAlpha=1;},
+    subject(c){person(c,360,420,250,{skin:'#e0b49a',hair:'#5a3b28',top:'#b8322a',bottom:'#2d3340',scarf:'#e9e1c9',hat:'#1f4d6b'});}},
+  sunset:{name:'Sunset backlight',light:'Sun behind subject',ev:10.5,K:5200,bias:{eval:2,center:1.3,partial:.3},follow:true,dist:3,range:[1.5,10],bgDist:Infinity,speed:0,sRef:3,anchor:[330,450],
+    bg(c){sky(c,[[0,'#3b2f6b'],[.35,'#c8577a'],[.58,'#f7a24e'],[.7,'#fff0c0']]);
+      const g=c.createRadialGradient(430,320,10,430,320,260);g.addColorStop(0,'rgba(255,255,240,1)');g.addColorStop(.15,'rgba(255,240,190,.9)');g.addColorStop(1,'rgba(255,200,120,0)');c.fillStyle=g;c.fillRect(-500,-500,W+1000,H+1000);
+      circ(c,430,322,34,'#ffffff');
+      c.fillStyle=lg(c,336,H,[[0,'#d9895e'],[.3,'#7a4d6a'],[1,'#3a2a40']]);c.fillRect(-500,336,W+1000,H+600);
+      c.globalAlpha=.7;for(let i=0;i<18;i++){c.fillStyle='#ffe2a6';const w=60-i*2.5;c.fillRect(430-w/2+Math.sin(i)*6,342+i*6,w,2);}c.globalAlpha=1;
+      ridge(c,410,8,.01,'#2f2232',6);},
+    subject(c){c.save();c.shadowColor='rgba(255,215,150,.95)';c.shadowBlur=7;person(c,330,450,280,{skin:'#b07a5c',hair:'#2a1c16',top:'#4a6a7a',bottom:'#2b2830'});c.restore();}},
+};
+
+// ---------- challenges ----------
+const CH=[
+  {id:'c1',title:'Leave the green box',scene:'park',brief:'Turn the mode dial to Av. The main dial now picks the aperture and the camera works out the shutter. Take a well-exposed, sharp portrait.',checks:[{t:'mode',modes:['Av']},{t:'exp',tol:.67},{t:'shake',max:1.5}]},
+  {id:'c2',title:'Melt the background',scene:'park',brief:'Make the trees behind your friend dissolve into soft blur. You have three levers: the widest aperture, a longer zoom, and stepping closer.',checks:[{t:'mode',modes:['Av','M']},{t:'bgMin',min:14},{t:'exp',tol:.67},{t:'shake',max:1.5}]},
+  {id:'c3',title:'Front to back',scene:'lake',brief:'Keep the flowers at your feet and the mountains both sharp. Choose a focal length, an aperture and a focus distance that cover everything.',checks:[{t:'mode',modes:['Av','M']},{t:'fgbg',max:2.5},{t:'exp',tol:.67},{t:'shake',max:1.5}]},
+  {id:'c4',title:'Freeze the cyclist',scene:'path',brief:'Switch to Tv and pick a shutter fast enough to stop the bike, spokes and all.',checks:[{t:'mode',modes:['Tv']},{t:'subj',max:1.2},{t:'exp',tol:.67}]},
+  {id:'c5',title:'Show the speed',scene:'path',brief:'Now the opposite: let the bike blur (8–30 px) to show motion while the background stays crisp. Watch for a blinking aperture in the viewfinder.',checks:[{t:'mode',modes:['Tv','M']},{t:'subjRange',min:8,max:30},{t:'shake',max:1.5},{t:'exp',tol:.67}]},
+  {id:'c6',title:'Lamp light, no flash',scene:'room',brief:'Evening indoors. Get a sharp, clean shot of the cat batting its toy without flash, and fix the orange color cast.',checks:[{t:'mode',modes:['P','Tv','Av','M']},{t:'exp',tol:.67},{t:'subj',max:2},{t:'shake',max:1.5},{t:'isoMax',max:5},{t:'wb',tol:.2}]},
+  {id:'c7',title:'Beat the backlight',scene:'sunset',brief:'The sun is behind your friend. Evaluative metering sees the bright sky and darkens everything. Get their face properly exposed.',checks:[{t:'mode',modes:['P','Av','Tv']},{t:'exp',tol:.67},{t:'shake',max:1.5}]},
+  {id:'c8',title:'Snow is not grey',scene:'snow',brief:'The meter wants every scene to average out to mid-grey, so bright snow comes out dull. Make the snow white without blowing it out.',checks:[{t:'mode',modes:['P','Av','Tv']},{t:'exp',tol:.5},{t:'shake',max:1.5}]},
+  {id:'c9',title:'Sunny 16',scene:'path',brief:'Full manual using a rule instead of the meter: in bright sun at ISO 100, set f/16 and a shutter close to 1/ISO.',checks:[{t:'mode',modes:['M']},{t:'isoEq',v:0},{t:'apEq',v:24},{t:'exp',tol:.34}]},
+  {id:'c10',title:'Manual in the living room',scene:'room',brief:'Same cat, now in M. You choose all three settings and the meter only advises. Sharp, clean and color-correct.',checks:[{t:'mode',modes:['M']},{t:'exp',tol:.5},{t:'subj',max:2},{t:'shake',max:1.5},{t:'isoMax',max:5},{t:'wb',tol:.2}]},
+  {id:'c11',title:'Light trails',scene:'night',brief:'Tripod out. Paint the traffic into ribbons of light: 4 seconds or longer at ISO 100, with the city correctly exposed.',checks:[{t:'mode',modes:['M']},{t:'tMin',k:-6},{t:'isoEq',v:0},{t:'shake',max:1.5},{t:'exp',tol:1}]},
+  {id:'c12',title:'Final exam: race day',scene:'path',brief:'Full manual, tight tolerance. Freeze the cyclist, keep ISO at 400 or lower, and land exposure within a third of a stop.',checks:[{t:'mode',modes:['M']},{t:'subj',max:1},{t:'isoMax',max:2},{t:'exp',tol:.34}]},
+];
+
+// ---------- camera state ----------
+const cam={mode:'A+',kT:24,kA:15,iso:2,autoIso:false,comp:0,pshift:0,focal:35,dist:3,meter:'eval',wb:'AWB',tripod:false,is:true};
+let sceneId='park',scene=SCENES.park,challenge=null,dialMod=null;
+
+const MODES={
+  'A+':['A+ · Scene Intelligent Auto','The camera decides everything. No exposure compensation, no ISO control. This is the box you are learning to leave.'],
+  'P':['P · Program','Camera picks shutter and aperture; you control ISO, compensation, white balance and metering. The main dial shifts the pair.'],
+  'Tv':['Tv · Shutter priority','You choose the shutter speed, the camera matches the aperture. If the aperture blinks, it ran out of range.'],
+  'Av':['Av · Aperture priority','You choose the aperture, the camera matches the shutter. Watch the shutter: if it gets slow, your shot will shake.'],
+  'M':['M · Manual','You set everything. The scale in the viewfinder shows what the meter thinks; you decide whether it is right.'],
+};
+
+function solve(){
+  const c=cam,s=scene,auto=c.mode==='A+';
+  const meter=auto?'eval':c.meter;
+  const bias=s.bias[meter]||0;
+  const comp3=(auto||c.mode==='M')?0:c.comp;
+  const meterEV=s.ev+bias;
+  const target3=3*meterEV-comp3;
+  const kmin=Math.round(11+4*(c.focal-18)/37);
+  const handK=Math.ceil(3*Math.log2(c.focal*1.6));
+  let kA=clamp(c.kA,kmin,27),kT=c.kT,iso=c.iso,blinkA=false,blinkT=false;
+  const autoIso=auto||(c.autoIso&&c.mode!=='M');
+  const isos=autoIso?[0,1,2,3,4,5,6]:[c.iso];
+  if(c.mode==='Av'){for(iso of isos){kT=Math.round(target3+3*iso-kA);if(kT>=handK)break;}}
+  else if(c.mode==='Tv'){for(iso of isos){kA=Math.round(target3+3*iso-kT);if(kA>=kmin)break;}}
+  else if(c.mode==='P'||auto){for(iso of isos){const S=target3+3*iso;kA=clamp(kmin+Math.max(0,Math.round((S-(kmin+21))/2)),kmin,27);if(!auto)kA=clamp(kA+c.pshift,kmin,27);kT=Math.round(S-kA);if(kT>=Math.max(handK,15))break;}}
+  if(kT>36){kT=36;blinkT=true;}if(kT<-15){kT=-15;blinkT=true;}
+  if(kA>27){kA=27;blinkA=true;}if(kA<kmin){kA=kmin;blinkA=true;}
+  if(c.mode==='Tv'&&blinkT)blinkT=false;
+  if(c.mode==='Av'&&blinkA)blinkA=false;
+  if(c.mode==='M'){blinkA=blinkT=false;}
+  const E3=kA+kT-3*iso;
+  return {kA,kT,iso,blinkA,blinkT,err:s.ev-E3/3,reading:meterEV-E3/3,meter,autoIso,kmin,handK,wb:auto?'AWB':c.wb};
+}
+function physics(r){
+  const f=cam.focal,N=2**(r.kA/6),t=2**(-r.kT/3),s=cam.dist;
+  const subjD=scene.follow?s:scene.subjDist;
+  const coc=d=>{if(!isFinite(d))d=1e7;const S=s*1000,D=d*1000;return f*f/(N*Math.max(1,S-f))*Math.abs(D-S)/D/22.3*W*DOF_K;};
+  const bgD=scene.bgOffset?subjD+scene.bgOffset:scene.bgDist;
+  const speedPx=scene.speed*f/subjD/22.3*W;
+  const tSafe=1/(f*1.6)*(cam.is?8:1);
+  const K=scene.K;
+  let setK=r.wb==='AWB'?(K<4000?K+(5200-K)*.35:K>6000?K-(K-6000)*.6:K):+r.wb;
+  const warm=Math.log2(setK/K);
+  return {t,N,bgBlur:coc(bgD),subjDof:coc(subjD),fgBlur:scene.fgDist?coc(scene.fgDist):0,motion:speedPx*t,shake:cam.tripod?0:Math.min(70,1.2*t/tSafe),noise:NOISE_SIG[r.iso],warm,subjD};
+}
+
+// ---------- rendering ----------
+const cv=document.getElementById('cv'),mctx=cv.getContext('2d',{willReadFrequently:true});
+const mk=()=>{const c=document.createElement('canvas');c.width=PW;c.height=PH;return c;};
+const L={bg:mk(),subj:mk(),fg:mk(),comp:mk(),lights:mk(),tmp:mk(),small:mk()};
+const FILTER_OK=(()=>{try{const c=document.createElement('canvas').getContext('2d');c.filter='blur(2px)';return c.filter==='blur(2px)';}catch(e){return false;}})();
+function blur(cvs,diam){
+  if(diam<.6)return;const sigma=diam/2.4;const t=L.tmp.getContext('2d');t.setTransform(1,0,0,1,0,0);t.clearRect(0,0,PW,PH);
+  if(FILTER_OK){t.filter=`blur(${sigma.toFixed(2)}px)`;t.drawImage(cvs,0,0);t.filter='none';}
+  else{const f=Math.max(1,sigma*.9),sw=Math.max(2,Math.round(PW/f)),sh=Math.max(2,Math.round(PH/f));const sm=L.small.getContext('2d');sm.clearRect(0,0,PW,PH);sm.imageSmoothingEnabled=true;sm.drawImage(cvs,0,0,sw,sh);t.imageSmoothingEnabled=true;t.drawImage(L.small,0,0,sw,sh,0,0,PW,PH);}
+  const c=cvs.getContext('2d');c.setTransform(1,0,0,1,0,0);c.globalCompositeOperation='copy';c.drawImage(L.tmp,0,0);c.globalCompositeOperation='source-over';
+}
+function smear(cvs,dx,dy){
+  const len=Math.hypot(dx,dy);if(len<.6)return;const passes=Math.min(8,Math.ceil(Math.log2(len))+1);
+  const t=L.tmp.getContext('2d'),c=cvs.getContext('2d');t.setTransform(1,0,0,1,0,0);c.setTransform(1,0,0,1,0,0);
+  for(let j=0;j<passes;j++){const sx=dx/2**(j+1),sy=dy/2**(j+1);t.clearRect(0,0,PW,PH);t.globalCompositeOperation='lighter';t.globalAlpha=.5;t.drawImage(cvs,-sx/2,-sy/2);t.drawImage(cvs,sx/2,sy/2);t.globalAlpha=1;t.globalCompositeOperation='source-over';
+    c.globalCompositeOperation='copy';c.drawImage(L.tmp,0,0);c.globalCompositeOperation='source-over';}
+}
+function paint(cvs,fn,z,sub){const c=cvs.getContext('2d');c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,PW,PH);c.translate(P,P);c.translate(W/2,H/2);c.scale(z,z);c.translate(-W/2,-H/2);
+  if(sub){c.translate(sub.ax,sub.ay);c.scale(sub.m,sub.m);c.translate(-sub.ax,-sub.ay);}fn(c);c.setTransform(1,0,0,1,0,0);}
+const LIN=new Float32Array(256);for(let i=0;i<256;i++)LIN[i]=(i/255)**2.2;
+const NT=(()=>{const n=1<<18,a=new Float32Array(n),r=R(99);for(let i=0;i<n;i++)a[i]=(r()+r()+r()+r()-2)*1.7;return a;})();
+function lut(m){const a=new Uint8ClampedArray(256);for(let i=0;i<256;i++)a[i]=255*Math.min(1,LIN[i]*m)**(1/2.2);return a;}
+let last=null,pending=false;
+function schedule(){if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;render();});}
+function render(){
+  const r=solve(),ph=physics(r);
+  if(cam.mode!=='M'){cam.kA=r.kA;cam.kT=r.kT;if(r.autoIso)cam.iso=r.iso;}else cam.kA=r.kA;
+  const z=cam.focal/18;
+  paint(L.bg,scene.bg,z);blur(L.bg,ph.bgBlur);
+  const m=scene.follow?scene.sRef/cam.dist:1;
+  paint(L.subj,scene.subject,z,{ax:scene.anchor[0],ay:scene.anchor[1],m});blur(L.subj,ph.subjDof);
+  if(ph.motion>.6)smear(L.subj,ph.motion*z/z,0);
+  const cc=L.comp.getContext('2d');cc.setTransform(1,0,0,1,0,0);cc.clearRect(0,0,PW,PH);cc.drawImage(L.bg,0,0);cc.drawImage(L.subj,0,0);
+  if(scene.fg){paint(L.fg,scene.fg,z);blur(L.fg,ph.fgBlur);cc.drawImage(L.fg,0,0);}
+  const sdx=ph.shake*.8,sdy=ph.shake*.55;
+  if(ph.shake>.6)smear(L.comp,sdx,sdy);
+  mctx.globalCompositeOperation='copy';mctx.drawImage(L.comp,P,P,W,H,0,0,W,H);mctx.globalCompositeOperation='source-over';
+  // pixel pass: exposure, white balance, noise, histogram
+  const img=mctx.getImageData(0,0,W,H),d=img.data,g=2**r.err,w=ph.warm;
+  const lr=lut(g*2**(.45*w)),lgL=lut(g*2**(.05*w)),lb=lut(g*2**(-.6*w));
+  const hist=new Uint32Array(64);let hi=0,lo=0,ni=(r.iso*7919)&((1<<18)-1);const sig=ph.noise,nm=(1<<18)-1;
+  for(let i=0;i<d.length;i+=4){let R_=lr[d[i]],G_=lgL[d[i+1]],B_=lb[d[i+2]];
+    if(sig>.3){const a=sig*(1.35-(R_+G_+B_)/960);const n=NT[ni++&nm]*a;R_+=n+NT[ni++&nm]*a*.45;G_+=n;B_+=n+NT[ni++&nm]*a*.55;R_=R_<0?0:R_>255?255:R_;G_=G_<0?0:G_>255?255:G_;B_=B_<0?0:B_>255?255:B_;}
+    d[i]=R_;d[i+1]=G_;d[i+2]=B_;const Y=.2126*R_+.7152*G_+.0722*B_;hist[Math.min(63,Y>>2)]++;if(Y>=253)hi++;else if(Y<=2)lo++;}
+  mctx.putImageData(img,0,0);
+  if(scene.lights){const lc=L.lights.getContext('2d');paint(L.lights,c=>scene.lights(c,ph.t),z);blur(L.lights,ph.bgBlur);if(ph.shake>.6)smear(L.lights,sdx,sdy);
+    const li=2**(r.iso-(r.kA-18)/3);mctx.globalCompositeOperation='lighter';mctx.globalAlpha=Math.min(1,li);mctx.drawImage(L.lights,P,P,W,H,0,0,W,H);if(li>1.4){mctx.globalAlpha=Math.min(1,li-1);mctx.drawImage(L.lights,P,P,W,H,0,0,W,H);}mctx.globalAlpha=1;mctx.globalCompositeOperation='source-over';}
+  last={r,ph,hist,hi:hi/(W*H),lo:lo/(W*H)};
+  updateUI();drawHist();
+  if(coach)coachTick();
+}
+
+// ---------- UI sync ----------
+const $=id=>document.getElementById(id);
+const els={sh:$('sh'),ap:$('ap'),iso:$('iso'),ec:$('ec'),fl:$('fl'),dist:$('dist'),meter:$('meter'),wb:$('wb'),autoiso:$('autoiso'),is:$('is'),tripod:$('tripod')};
+function updateUI(){
+  const {r,ph}=last,m=cam.mode,auto=m==='A+';
+  els.sh.value=r.kT;els.ap.value=r.kA;els.iso.value=r.iso;els.ec.value=cam.comp;els.fl.value=cam.focal;els.dist.value=cam.dist;
+  els.meter.value=r.meter;els.wb.value=r.wb;els.autoiso.checked=r.autoIso;els.is.checked=cam.is;els.tripod.checked=cam.tripod;
+  els.sh.disabled=!(m==='Tv'||m==='M');els.ap.disabled=!(m==='Av'||m==='M');els.iso.disabled=auto||(r.autoIso);els.ec.disabled=auto||m==='M';
+  els.meter.disabled=auto;els.wb.disabled=auto;els.autoiso.disabled=auto||m==='M';
+  const setO=(id,txt,isAuto)=>{const o=$(id);o.textContent=txt;o.classList.toggle('auto',!!isAuto);};
+  setO('shO',shL(r.kT),!(m==='Tv'||m==='M'));setO('apO','f/'+apL(r.kA),!(m==='Av'||m==='M'));setO('isoO',ISO[r.iso]+(r.iso===7?' (12800)':''),r.autoIso);
+  setO('ecO',(auto||m==='M')?'n/a':sgnThirds(cam.comp/3));setO('flO',cam.focal+'mm  (≈'+Math.round(cam.focal*1.6)+'mm FF)');
+  $('distL').textContent=scene.follow?'Subject distance':'Focus distance';setO('distO',cam.dist.toFixed(1)+' m');
+  els.dist.min=scene.range[0];els.dist.max=scene.range[1];els.dist.step=scene.range[1]>20?.5:.1;
+  // viewfinder
+  const vT=$('vfT'),vA=$('vfA');vT.textContent=shL(r.kT);vA.textContent=apL(r.kA);vT.classList.toggle('blink',r.blinkT);vA.classList.toggle('blink',r.blinkA);
+  $('vfI').textContent='ISO'+(r.iso===7?'H':ISO[r.iso]);
+  const comp=(auto||m==='M')?0:cam.comp/3;$('vfC').textContent=comp?sgnThirds(comp):'';
+  const reading=m==='M'?r.reading:(r.blinkA||r.blinkT?r.reading:comp);
+  const mt=$('vfMeter'),pos=clamp(reading,-2,2);
+  mt.innerHTML='-2..1..<b>0</b>..1..+2'+`<i class="mk" style="left:${(pos+2)/4*92+4}%"></i>`+(reading>2.1?'<i class="ar" style="right:-12px">▶</i>':reading<-2.1?'<i class="ar" style="left:-12px">◀</i>':'');
+  mt.title=`Meter: ${sgnThirds(reading)} stops`;
+  // mode text
+  $('modeName').textContent=MODES[m][0];$('modeDesc').textContent=MODES[m][1];
+  $('avBtn').setAttribute('aria-pressed',dialMod==='av');$('isoBtn').setAttribute('aria-pressed',dialMod==='iso');
+  $('dialHint').textContent=dialHintText();
+  drawDial();
+  // lab
+  const fmt=v=>v<.05?'0':v<10?v.toFixed(1):Math.round(v)+'';
+  const rows=[['Bg blur',fmt(ph.bgBlur)+' px'],['Subject motion',scene.speed?fmt(ph.motion)+' px':'still'],['Shake',cam.tripod?'tripod':fmt(ph.shake)+' px'],['Noise',['clean','clean','low','visible','grainy','heavy','very heavy','extreme'][r.iso]]];
+  if(scene.fgDist)rows[1]=['Near blur',fmt(ph.fgBlur)+' px'];
+  $('lab').innerHTML=rows.map(([k,v])=>`<div><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
+}
+function dialHintText(){
+  const m=cam.mode;
+  if(dialMod==='iso')return 'ISO button pressed: the main dial changes ISO. Press ISO again to finish.';
+  if(dialMod==='av'){if(m==='M')return 'Holding Av±: the main dial changes the aperture.';if(m==='A+')return 'A+ has no exposure compensation.';return 'Holding Av±: the main dial sets exposure compensation.';}
+  return {'A+':'In A+ the main dial does nothing.','P':'Main dial: program shift. Hold Av± for exposure compensation.','Tv':'Main dial: shutter speed. Hold Av± for exposure compensation.','Av':'Main dial: aperture. Hold Av± for exposure compensation.','M':'Main dial: shutter speed. Hold Av± for aperture. Match the meter mark to 0, or wherever you judge right.'}[m];
+}
+function drawHist(){
+  const c=$('hist'),x=c.getContext('2d'),w=c.width,h=c.height,st=getComputedStyle(document.documentElement);
+  x.clearRect(0,0,w,h);const max=Math.max(...last.hist)||1;
+  x.strokeStyle=st.getPropertyValue('--line');x.lineWidth=1;for(let i=1;i<4;i++){x.beginPath();x.moveTo(i*w/4,0);x.lineTo(i*w/4,h);x.stroke();}
+  x.beginPath();x.moveTo(0,h);for(let i=0;i<64;i++){const y=h-Math.sqrt(last.hist[i]/max)*(h-8);x.lineTo(i*w/63,y);}x.lineTo(w,h);x.closePath();
+  x.fillStyle=st.getPropertyValue('--muted');x.globalAlpha=.55;x.fill();x.globalAlpha=1;x.strokeStyle=st.getPropertyValue('--ink');x.lineWidth=1.5;x.stroke();
+  x.font='600 20px '+st.getPropertyValue('--mono');x.fillStyle=st.getPropertyValue('--bad');
+  if(last.hi>.02)x.fillText('CLIP',w-58,24);if(last.lo>.08){x.fillText('CLIP',6,24);}
+}
+
+// ---------- mode dial ----------
+const DIAL=[['M','M'],['Av','Av'],['Tv','Tv'],['P','P'],['A+','A+'],['nofl','NO FL'],['CA','CA'],['port','PORT'],['land','LAND'],['macro','MACRO'],['sport','SPORT'],['scn','SCN'],['movie','MOVIE']];
+const DIAL_INFO={nofl:'Flash Off is A+ without the pop-up flash. Do it yourself: P with the flash down and Auto ISO.',CA:'Creative Auto offers "background blur" and "brightness" sliders. Those are aperture and exposure compensation: use Av.',port:'Portrait = wide aperture. Do it yourself: Av, smallest f-number, zoom to 55mm and step closer.',land:'Landscape = small aperture for depth. Do it yourself: Av at f/8–f/11 at 18mm.',macro:'Close-up = get as near as focus allows. Do it yourself: Av f/8 at 55mm, about 0.25 m away.',sport:'Sports = fast shutter + AI Servo. Do it yourself: Tv 1/1000 with ▶ AI Servo and ◀ Continuous.',scn:'SCN holds extra presets such as Food and Night Portrait. Each one is a recipe you can now build in P/Tv/Av/M.',movie:'Video mode. Same exposure triangle applies, but it is outside this simulator.'};
+function drawDial(){
+  const svg=$('dial'),step=360/DIAL.length,idx=DIAL.findIndex(d=>d[0]===cam.mode);
+  let h=`<circle r="96" fill="#1c1f23"/><circle r="94" fill="none" stroke="#33383f" stroke-width="2" stroke-dasharray="2 4"/><circle r="40" fill="#26292e"/><path d="M0 -99 L-6 -90 L6 -90Z" fill="#FF6B4E"/>`;
+  h+=`<g transform="rotate(${-idx*step})" style="transition:transform .35s">`;
+  DIAL.forEach(([k,lab],i)=>{const a=i*step,cr=['M','Av','Tv','P','A+'].includes(k);
+    h+=`<g transform="rotate(${a}) translate(0 -70)"><text text-anchor="middle" dominant-baseline="middle" data-k="${k}" class="${cr?'':'sc'} ${k===cam.mode?'sel':''}" font-size="${cr?17:10}" tabindex="0" role="button" aria-label="${lab} mode">${lab}</text></g>`;});
+  h+='</g>';
+  svg.innerHTML=h;
+}
+$('dial').addEventListener('click',e=>{const k=e.target.dataset&&e.target.dataset.k;if(k)pickMode(k);});
+$('dial').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.dataset.k){e.preventDefault();pickMode(e.target.dataset.k);}});
+function pickMode(k){if(DIAL_INFO[k]){toast(DIAL_INFO[k]);return;}cam.mode=k;cam.pshift=0;if(k==='A+'||k==='M')dialMod=dialMod==='iso'?'iso':null;schedule();}
+
+// ---------- control events ----------
+els.sh.addEventListener('input',()=>{cam.kT=+els.sh.value;schedule();});
+els.ap.addEventListener('input',()=>{cam.kA=+els.ap.value;schedule();});
+els.iso.addEventListener('input',()=>{cam.iso=+els.iso.value;schedule();});
+els.ec.addEventListener('input',()=>{cam.comp=+els.ec.value;schedule();});
+els.fl.addEventListener('input',()=>{cam.focal=+els.fl.value;schedule();});
+els.dist.addEventListener('input',()=>{cam.dist=+els.dist.value;schedule();});
+els.meter.addEventListener('change',()=>{cam.meter=els.meter.value;schedule();});
+els.wb.addEventListener('change',()=>{cam.wb=els.wb.value;schedule();});
+els.autoiso.addEventListener('change',()=>{cam.autoIso=els.autoiso.checked;schedule();});
+els.is.addEventListener('change',()=>{cam.is=els.is.checked;schedule();});
+els.tripod.addEventListener('change',()=>{cam.tripod=els.tripod.checked;schedule();});
+function dial(dir){
+  const m=cam.mode;
+  if(dialMod==='iso'){if(m!=='A+'){cam.iso=clamp(cam.iso+dir,0,7);cam.autoIso=false;}}
+  else if(dialMod==='av'){if(m==='M')cam.kA=clamp(cam.kA+dir,11,27);else if(m!=='A+')cam.comp=clamp(cam.comp+dir,-15,15);}
+  else if(m==='Av')cam.kA=clamp(cam.kA+dir,11,27);
+  else if(m==='Tv'||m==='M')cam.kT=clamp(cam.kT+dir,-15,36);
+  else if(m==='P')cam.pshift=clamp(cam.pshift+dir,-16,16);
+  schedule();
+}
+$('dialL').onclick=()=>dial(-1);$('dialR').onclick=()=>dial(1);
+$('avBtn').onclick=()=>{dialMod=dialMod==='av'?null:'av';updateUI();};
+$('isoBtn').onclick=()=>{dialMod=dialMod==='iso'?null:'iso';updateUI();};
+let shiftHeld=false;
+document.addEventListener('keydown',e=>{
+  if(S.tab!=='shoot')return;const tg=e.target.tagName;if(tg==='INPUT'||tg==='SELECT'||tg==='TEXTAREA'||tg==='BUTTON'&&e.key===' ')return;
+  if(e.key==='Shift'&&!shiftHeld&&dialMod!=='iso'){shiftHeld=true;dialMod='av';updateUI();}
+  if(e.key==='ArrowLeft'){e.preventDefault();dial(-1);}if(e.key==='ArrowRight'){e.preventDefault();dial(1);}
+  if(e.key===' '&&!$('result').hidden===false){e.preventDefault();shoot();}
+});
+document.addEventListener('keyup',e=>{if(e.key==='Shift'&&shiftHeld){shiftHeld=false;if(dialMod==='av')dialMod=null;if(last)updateUI();}});
+
+// AF points (T6 diamond of 9)
+$('afpts').innerHTML=[[50,50],[50,27],[50,73],[17,50],[83,50],[31,37],[69,37],[31,63],[69,63]].map((p,i)=>`<b class="${i===0?'on':''}" style="left:${p[0]}%;top:${p[1]}%"></b>`).join('');
+
+// ---------- scenes + challenges UI ----------
+function loadScene(id,keep){
+  sceneId=id;scene=SCENES[id];cam.dist=scene.dist;cam.pshift=0;
+  if(!keep){cam.comp=0;cam.tripod=false;cam.wb='AWB';cam.meter='eval';}
+  $('result').hidden=true;renderBrief();renderSceneChips();schedule();
+}
+function renderSceneChips(){
+  $('scenes').innerHTML=Object.entries(SCENES).map(([k,s])=>`<button class="chip" data-s="${k}" aria-pressed="${!challenge&&k===sceneId}">${s.name} <span class="muted">· ${s.light}</span></button>`).join('');
+}
+$('scenes').addEventListener('click',e=>{const b=e.target.closest('[data-s]');if(!b)return;challenge=null;coach=null;loadScene(b.dataset.s);renderChallenges();document.querySelector('.shoot').scrollIntoView({behavior:'smooth',block:'start'});});
+function unlocked(i){return i===0||(S.best[CH[i-1].id]||0)>=1;}
+function starStr(n){return '★'.repeat(n)+`<span class="off">${'★'.repeat(3-n)}</span>`;}
+function renderChallenges(){
+  $('clist').innerHTML=CH.map((c,i)=>{const u=unlocked(i),b=S.best[c.id]||0,modes=c.checks.find(x=>x.t==='mode').modes;
+    return `<button class="card ${u?'':'locked'} ${challenge&&challenge.id===c.id?'active':''}" data-c="${i}" ${u?'':'aria-disabled="true"'}>
+      <span class="n">${String(i+1).padStart(2,'0')} · ${SCENES[c.scene].name}</span><h4>${c.title}</h4>
+      <span style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="tag">${modes.join(' / ')}</span><span class="st">${u?starStr(b):'locked'}</span></span></button>`;}).join('');
+}
+$('clist').addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(!b)return;const i=+b.dataset.c;if(!unlocked(i)){toast('Finish the previous challenge to unlock this one.');return;}
+  coach=null;challenge=CH[i];loadScene(challenge.scene);renderChallenges();document.querySelector('.shoot').scrollIntoView({behavior:'smooth',block:'start'});});
+function checkLabel(c){return {mode:()=>`Mode: ${c.modes.join(' or ')}`,exp:()=>`Exposure within ±${thirds(c.tol)} stop`,shake:()=>'No camera shake',subj:()=>`Subject frozen (≤ ${c.max} px)`,subjRange:()=>`Subject blur ${c.min}–${c.max} px`,bgMin:()=>`Background blur ≥ ${c.min} px`,fgbg:()=>`Near and far sharp (≤ ${c.max} px)`,isoMax:()=>`ISO ${ISO[c.max]} or lower`,isoEq:()=>`ISO ${ISO[c.v]}`,apEq:()=>`Aperture f/${apL(c.v)}`,tMin:()=>`Shutter ${shL(c.k)} or longer`,wb:()=>'Neutral color, no cast'}[c.t]();}
+function renderBrief(){
+  if(coach){renderCoach();return;}
+  applyHL([]);
+  const b=$('brief');
+  if(challenge){const i=CH.indexOf(challenge);b.innerHTML=`<div class="eyebrow">Challenge ${i+1} of ${CH.length} · ${scene.light}</div><h3>${challenge.title}</h3><p style="font-size:14px">${challenge.brief}</p><ul>${challenge.checks.map(c=>`<li>${checkLabel(c)}</li>`).join('')}</ul><div class="actions"><button class="btn" id="freeBtn">Exit to free shoot</button></div>`;
+    $('freeBtn').onclick=()=>{challenge=null;renderBrief();renderChallenges();renderSceneChips();};}
+  else b.innerHTML=`<div class="eyebrow">Free shoot · ${scene.light}</div><h3>${scene.name}</h3><p class="hint">Change settings and watch the viewfinder meter, the histogram and the lab readout. Pick a challenge below when you want a goal.</p>`;
+}
+
+// ---------- shooting + evaluation ----------
+function evalCheck(c,r,ph){
+  switch(c.t){
+    case 'mode':return [c.modes.includes(cam.mode),cam.mode];
+    case 'exp':return [Math.abs(r.err)<=c.tol+1e-6,sgnThirds(r.err)+' EV'];
+    case 'shake':return [ph.shake<=c.max,cam.tripod?'tripod':ph.shake.toFixed(1)+' px'];
+    case 'subj':return [ph.motion<=c.max,ph.motion.toFixed(1)+' px'];
+    case 'subjRange':return [ph.motion>=c.min&&ph.motion<=c.max,ph.motion.toFixed(1)+' px'];
+    case 'bgMin':return [ph.bgBlur>=c.min,ph.bgBlur.toFixed(1)+' px'];
+    case 'fgbg':return [ph.fgBlur<=c.max&&ph.bgBlur<=c.max,`${ph.fgBlur.toFixed(1)} / ${ph.bgBlur.toFixed(1)} px`];
+    case 'isoMax':return [r.iso<=c.max,'ISO '+ISO[r.iso]];
+    case 'isoEq':return [r.iso===c.v,'ISO '+ISO[r.iso]];
+    case 'apEq':return [r.kA===c.v,'f/'+apL(r.kA)];
+    case 'tMin':return [r.kT<=c.k,shL(r.kT)];
+    case 'wb':return [Math.abs(ph.warm)<=c.tol,Math.abs(ph.warm)<.05?'neutral':ph.warm>0?'warm cast':'cool cast'];
+  }
+}
+function expTip(r){
+  const e=r.err,amt=thirds(e),over=e>0,m=cam.mode;
+  if(r.blinkA)return `The aperture value was blinking: the lens ran out of ${over?'small':'wide'} apertures. ${over?'Pick a faster shutter or lower the ISO.':'Pick a slower shutter or raise the ISO.'}`;
+  if(r.blinkT)return `The shutter value was blinking: the camera ran out of shutter speeds. ${over?'Use a smaller aperture (bigger f-number) or lower ISO.':'Open the aperture or raise ISO.'}`;
+  const fooled=(scene.bias[r.meter]||0)>.5;
+  let s=`${amt} stop${amt==='1'?'':'s'} ${over?'over':'under'}exposed. `;
+  if(m==='M')s+=`Turn the main dial toward a ${over?'faster':'slower'} shutter, or hold Av± and turn to ${over?'close':'open'} the aperture.`;
+  else if(m==='A+')s+='A+ cannot be corrected. Switch to P, Av or Tv so you can use exposure compensation.';
+  else s+=`Hold Av± and turn the main dial to ${over?'subtract':'add'} about ${amt} of exposure compensation.`;
+  if(fooled&&!over)s+=sceneId==='sunset'?' The bright sky fooled the meter. Partial metering (Q screen) reads just the center, where the face is.':' Bright scenes fool the meter into underexposing. With snow, plan on +1⅔.';
+  return s;
+}
+function tipFor(c,r,ph){
+  switch(c.t){
+    case 'mode':return `Turn the mode dial to ${c.modes.join(' or ')}.`;
+    case 'exp':return expTip(r);
+    case 'shake':return `${shL(r.kT)} is too slow to hand-hold at ${cam.focal}mm. The T6 rule of thumb is 1/${Math.round(cam.focal*1.6)} or faster without IS (about 3 stops slower with IS on). Use a faster shutter, raise ISO, or use a tripod.`;
+    case 'subj':return `The subject moved ${ph.motion.toFixed(1)} px while the shutter was open. Use a faster shutter: in Tv or M, turn the main dial right. Raise ISO if the image gets dark.`;
+    case 'subjRange':return ph.motion<c.min?'Too frozen to show speed. Slow the shutter down (turn the main dial left). In bright sun you will need f/16–f/22 and ISO 100 to stop it from overexposing.':'So much blur that the bike disappears. Pick a slightly faster shutter.';
+    case 'bgMin':return `Only ${ph.bgBlur.toFixed(1)} px of background blur. Zoom toward 55mm, step closer to your subject, and use the smallest f-number the lens allows.`;
+    case 'fgbg':return `Near ${ph.fgBlur.toFixed(1)} px, far ${ph.bgBlur.toFixed(1)} px. Zoom out to 18mm, stop down to f/8–f/11, and focus about a third of the way into the scene (2–4 m).`;
+    case 'isoMax':return `ISO ${ISO[r.iso]} is too noisy for this brief. Get light from a wider aperture or a slower (but still safe) shutter instead.`;
+    case 'isoEq':return `Press the ISO button on top and turn the main dial to ${ISO[c.v]}.`;
+    case 'apEq':return `In M, hold Av± and turn the main dial until the aperture reads ${apL(c.v)}.`;
+    case 'tMin':return `Keep the shutter open ${shL(c.k)} or longer: in M, turn the main dial left. Use a smaller aperture to keep exposure in check.`;
+    case 'wb':return ph.warm>0?'The image has an orange cast from the lamps. Press ▲ on the cross keys (WB) and choose Tungsten.':'The image has a blue cast. Press ▲ (WB) and choose a warmer preset such as Daylight, Cloudy or Shade.';
+  }
+}
+let film=[];
+let audioCtx=null;
+function click(){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();const a=audioCtx,n=a.sampleRate*.06,b=a.createBuffer(1,n,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++){const env=i<n*.15?1:Math.exp(-(i-n*.15)/(n*.12));d[i]=(Math.random()*2-1)*env*.5*(i>n*.55&&i<n*.62?1.6:1);}const s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start();}catch(e){}}
+function shoot(){
+  if(!last)return;const {r,ph}=last;click();
+  const bo=$('blackout');bo.classList.remove('go');void bo.offsetWidth;bo.classList.add('go');
+  const th=document.createElement('canvas');th.width=240;th.height=160;th.getContext('2d').drawImage(cv,0,0,240,160);
+  film.unshift({src:th.toDataURL('image/jpeg',.75),cap:`${shL(r.kT)} f/${apL(r.kA)} ISO${ISO[r.iso]} ${cam.mode}`});film=film.slice(0,10);
+  $('film').innerHTML=film.map(f=>`<figure><img src="${f.src}" alt="Shot at ${f.cap}"><figcaption>${f.cap}</figcaption></figure>`).join('');
+  S.shots++;
+  if(['P','Tv','Av','M'].includes(cam.mode))award('creative');
+  const okExp=Math.abs(r.err)<=1;
+  if(ph.bgBlur>=20&&okExp)award('bokeh');
+  if(scene.speed>0&&ph.motion<.5&&okExp)award('frozen');
+  if(r.kT<=-6&&ph.shake<1.5&&okExp)award('owl');
+  if(cam.mode==='M'&&Math.abs(r.err)<.05)award('whisper');
+  if(sceneId==='room'&&Math.abs(ph.warm)<=.2&&okExp)award('wbfix');
+  if(coach)coachShot(r,ph);else if(challenge)showChallengeResult(r,ph);else showFreeResult(r,ph);
+  save();
+}
+function showChallengeResult(r,ph){
+  const res=challenge.checks.map(c=>{const [ok,val]=evalCheck(c,r,ph);return {c,ok,val};});
+  const fails=res.filter(x=>!x.ok).length;let stars=Math.abs(r.err)>2?0:fails===0?3:fails===1?2:1;
+  const prev=S.best[challenge.id]||0,gain=Math.max(0,stars-prev)*30;
+  if(stars>prev){S.best[challenge.id]=stars;}
+  const i=CH.indexOf(challenge),next=CH[i+1];
+  const msg=stars===3?'Clean shot. Every requirement met.':stars===0?'That frame is unusable: more than 2 stops off.':`${fails} thing${fails>1?'s':''} to fix.`;
+  const el=$('result');el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><div class="eyebrow">${challenge.title}</div><h3>${msg}</h3></div><div class="stars">${starStr(stars)}</div></div>
+    <ul class="checks">${res.map(x=>`<li class="${x.ok?'ok':'no'}"><span class="ic">${x.ok?'✓':'✗'}</span><span>${checkLabel(x.c)}</span><span class="val">${x.val}</span>${x.ok?'':`<span class="tip">${tipFor(x.c,r,ph)}</span>`}</li>`).join('')}</ul>
+    <p class="mono muted" style="font-size:12.5px">${shL(r.kT)} · f/${apL(r.kA)} · ISO ${ISO[r.iso]} · ${cam.focal}mm · ${cam.mode}${(cam.mode!=='M'&&cam.mode!=='A+'&&cam.comp)?' · '+sgnThirds(cam.comp/3)+' comp':''}</p>
+    <div class="actions"><button class="btn" id="rAgain">Adjust and retry</button>${stars>=1&&next?`<button class="btn primary" id="rNext">Next: ${next.title}</button>`:''}</div>`;
+  el.hidden=false;
+  $('rAgain').onclick=()=>el.hidden=true;
+  if($('rNext'))$('rNext').onclick=()=>{challenge=next;loadScene(next.scene,true);renderChallenges();};
+  if(CH.every(c=>(S.best[c.id]||0)===3))award('allstar');
+  renderChallenges();
+  if(gain)addXP(gain,challenge.title);
+}
+function showFreeResult(r,ph){
+  const e=r.err,ae=Math.abs(e);
+  const verdict=ae<=.34?['Spot on','good']:ae<=.67?['Close',  'good']:ae<=1.34?[e>0?'A bit bright':'A bit dark','warn']:[e>0?'Overexposed':'Underexposed','bad'];
+  const rows=[
+    ['Exposure',`${sgnThirds(e)} EV · ${verdict[0]}`,ae<=.67],
+    ['Sharpness',ph.shake>1.5?`camera shake ${ph.shake.toFixed(1)} px`:'no shake',ph.shake<=1.5],
+  ];
+  if(scene.speed)rows.push(['Subject motion',ph.motion.toFixed(1)+' px'+(ph.motion<=1.2?' · frozen':ph.motion<=4?' · slight blur':' · motion blur'),ph.motion<=4]);
+  rows.push(['Background',ph.bgBlur.toFixed(1)+' px blur'+(ph.bgBlur>=14?' · creamy':ph.bgBlur>=5?' · soft':' · sharp'),true]);
+  if(scene.fgDist)rows.push(['Foreground',ph.fgBlur.toFixed(1)+' px blur',ph.fgBlur<=2.5]);
+  rows.push(['Color',Math.abs(ph.warm)<=.2?'neutral':ph.warm>0?'warm/orange cast':'cool/blue cast',Math.abs(ph.warm)<=.2]);
+  rows.push(['Noise',['clean','clean','low','visible','grainy','heavy','very heavy','extreme'][r.iso],r.iso<=4]);
+  const el=$('result');el.innerHTML=`<div><div class="eyebrow">Shot report · ${scene.name}</div><h3>${verdict[0]}</h3></div>
+    <ul class="checks">${rows.map(([k,v,ok])=>`<li class="${ok?'ok':'no'}"><span class="ic">${ok?'✓':'!'}</span><span>${k}</span><span class="val">${v}</span></li>`).join('')}</ul>
+    ${ae>.67?`<p class="hint">${expTip(r)}</p>`:''}
+    <p class="mono muted" style="font-size:12.5px">${shL(r.kT)} · f/${apL(r.kA)} · ISO ${ISO[r.iso]} · ${cam.focal}mm · ${cam.mode}</p>
+    <div class="actions"><button class="btn" id="rAgain">Back to the camera</button></div>`;
+  el.hidden=false;$('rAgain').onclick=()=>el.hidden=true;
+  addXP(2);
+}
+$('shootBtn').onclick=shoot;
+
+// ---------- tabs ----------
+function showTab(t){S.tab=t;save();document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));
+  document.querySelectorAll('[role=tabpanel]').forEach(p=>p.hidden=p.id!=='tab-'+t);if(t==='principles')drawFG();if(t==='shoot')schedule();if(t==='learn')renderCourse();}
+document.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(b)showTab(b.dataset.tab);});
+
+// ---------- drills ----------
+const STATIC_Q=[
+  ['In M mode on the T6, how do you change the aperture?',['Hold Av± and turn the main dial','Turn the main dial alone','Press the ISO button','Use the ◀ cross key'],'The main dial alone changes shutter in M. Hold Av± (beside the LCD) to switch it to aperture.'],
+  ['In Av mode, turning the main dial changes…',['The aperture','The shutter speed','ISO','White balance'],'Av = aperture priority: you pick f-number, the camera picks the shutter.'],
+  ['Which metering mode does the T6 NOT have?',['Spot','Partial','Evaluative','Center-weighted'],'No spot meter on the T6. Partial (~10% of the frame) is the closest.'],
+  ['The ▲ cross key on the T6 opens…',['White balance','Drive mode','AF operation','Picture Style'],'▲ WB, ◀ Drive, ▶ AF operation, ▼ Picture Style.'],
+  ['Which cross key gets you to the 2-second self-timer?',['◀ Drive','▲ WB','▶ AF','▼ Picture Style'],'◀ is Drive: single, continuous and the self-timers. 2 s is great on a tripod.'],
+  ['Your kid\'s soccer game. You want frozen action. Best setup?',['Tv 1/1000 + AI Servo','Av f/16 + One Shot','A+','M 1/30 f/22'],'Fast shutter freezes motion, AI Servo keeps refocusing as the player moves.'],
+  ['Which AF mode tracks a subject running toward you?',['AI Servo','One Shot','AI Focus','Manual focus'],'AI Servo refocuses continuously while you half-press. One Shot locks once.'],
+  ['What does the ✱ button do while shooting?',['Locks exposure (AE lock)','Deletes the image','Zooms into the LCD','Switches to Live View'],'AE lock: meter one spot, lock it, recompose.'],
+  ['Snow photos come out grey. What fixes it?',['+1 to +2 exposure compensation','−1 exposure compensation','A faster shutter','Tungsten white balance'],'The meter makes everything mid-grey. Tell it the scene is bright: add exposure.'],
+  ['Backlit portrait, face too dark. On the T6 you can…',['Use Partial metering or add + compensation','Switch to Tv','Lower the ISO','Close the aperture'],'Partial meters the center (the face) instead of the bright sky. Or just dial in +1 to +2.'],
+  ['Which setup gives the blurriest background?',['55mm, f/5.6, close to the subject','18mm, f/3.5, far from the subject','18mm, f/22','35mm, f/11'],'Longer focal length and closer distance matter as much as the f-number.'],
+  ['Handheld at 50mm on the T6 (1.6× crop), IS off. Roughly the slowest safe shutter?',['1/80','1/8','1/1000','1"'],'1/(focal × 1.6) = 1/80. With IS on you can go about 3 stops slower.'],
+  ['The T6\'s fastest shutter speed is…',['1/4000','1/8000','1/2000','1/1000'],'1/4000. Enough to freeze almost anything in daylight.'],
+  ['The T6\'s flash sync speed is…',['1/200','1/250','1/60','1/4000'],'Faster than 1/200 with the built-in flash and you get a dark band.'],
+  ['Highest standard ISO on the T6?',['6400 (H = 12800 when enabled)','25600','3200','1600'],'6400 native. H appears after you enable ISO expansion in the custom functions.'],
+  ['Indoor shots under warm bulbs look orange. Which WB?',['Tungsten','Shade','Cloudy','Daylight'],'Tungsten adds blue to cancel the orange of incandescent light.'],
+  ['In P mode, turning the main dial…',['Shifts the shutter/aperture pair','Changes ISO','Changes exposure compensation','Does nothing'],'Program shift. Same exposure, different combination.'],
+  ['A histogram piled against the right edge means…',['Highlights are clipping','The shot is underexposed','It is out of focus','The white balance is off'],'Right = bright. A wall on the right edge means lost highlight detail.'],
+  ['Sunny 16: ISO 100, f/16, shutter about…',['1/125','1/16','1/1000','1/30'],'In bright sun at f/16, shutter ≈ 1/ISO. 1/100 rounds to 1/125.'],
+  ['The T6 viewfinder shows roughly how much of the final frame?',['95%','100%','80%','50%'],'About 95%, so leave a little slack at the edges.'],
+  ['How many AF points does the T6 have?',['9','45','1','19'],'Nine, in a diamond. The center point is cross-type and the most sensitive.'],
+  ['How do you reach Bulb on the T6?',['In M, turn the main dial past 30"','In Tv, hold ISO','Press Q twice','The T6 has no Bulb'],'Bulb lives just beyond 30" in M mode.'],
+  ['When should the lens STABILIZER switch be OFF?',['On a tripod','Shooting sports','Indoors','Never'],'IS can add small vibrations when the camera is already locked down.'],
+  ['The rule of thirds puts the subject…',['On a third line or intersection','Dead center','Touching the edge','In a corner'],'Off-center placement creates tension and room to breathe.'],
+  ['Golden hour light is…',['Soft, warm and low','Harsh and overhead','Flat and blue','Only around noon'],'The hour after sunrise and before sunset: long shadows, warm color.'],
+  ['ISO 200 → ISO 800 is…',['2 stops brighter','4 stops brighter','1 stop brighter','3 stops brighter'],'Each doubling is one stop: 200→400→800.'],
+  ['1/250 → 1/60 lets in about…',['2 stops more light','2 stops less light','4 stops more light','The same light'],'1/250→1/125→1/60. Two doublings of time.'],
+  ['A smaller f-number (f/4 vs f/11) means…',['Wider opening, more light, shallower focus','Narrower opening, less light','A faster shutter only','Higher ISO'],'f-numbers are fractions: f/4 is a bigger hole than f/11.'],
+  ['Can you use exposure compensation in A+?',['No','Yes'],'A+ locks you out. Another reason to switch to P, Av or Tv.'],
+  ['On the viewfinder scale, the mark sits at −1 in M mode. The meter thinks the shot is…',['One stop dark','One stop bright','Correct','Out of focus'],'Left of zero = darker than the meter wants.'],
+];
+const FULL_AP=['2.8','4','5.6','8','11','16','22'],FULL_SH=['1/15','1/30','1/60','1/125','1/250','1/500','1/1000','1/2000','1/4000'];
+function genQ(){
+  const r=Math.random();
+  if(r<.18){const a=Math.floor(Math.random()*7);let b;do{b=Math.floor(Math.random()*7);}while(b===a||Math.abs(b-a)>4);const d=b-a;
+    const ans=`${Math.abs(d)} stop${Math.abs(d)>1?'s':''} ${d>0?'less':'more'} light`;const wrong=new Set();while(wrong.size<3){const x=1+Math.floor(Math.random()*4),dir=Math.random()<.5?'less':'more';const w=`${x} stop${x>1?'s':''} ${dir} light`;if(w!==ans)wrong.add(w);}
+    return [`f/${FULL_AP[a]} → f/${FULL_AP[b]}. What happens to the light?`,[ans,...wrong],`Each full f-stop step (2.8, 4, 5.6, 8, 11, 16, 22) halves the light. ${Math.abs(d)} step${Math.abs(d)>1?'s':''} ${d>0?'down':'up'} the list.`];}
+  if(r<.34){const si=2+Math.floor(Math.random()*5),ai=3,da=(Math.random()<.5?-1:1)*(1+Math.floor(Math.random()*2));const nai=ai+da,nsi=si-da;
+    const ans=FULL_SH[nsi];const opts=new Set([ans]);for(const o of [nsi+1,nsi-1,nsi+2,nsi-2,si])if(o>=0&&o<FULL_SH.length&&opts.size<4)opts.add(FULL_SH[o]);
+    return [`Correct exposure at ${FULL_SH[si]}, f/8. You switch to f/${FULL_AP[nai]}. Which shutter keeps the same exposure?`,[...opts],`f/8 → f/${FULL_AP[nai]} is ${Math.abs(da)} stop${Math.abs(da)>1?'s':''} ${da<0?'more':'less'} light, so the shutter must be ${Math.abs(da)} stop${Math.abs(da)>1?'s':''} ${da<0?'faster':'slower'}.`];}
+  if(r<.44){const isos=[100,200,400,800,1600,3200,6400];const i0=Math.floor(Math.random()*3),st=1+Math.floor(Math.random()*2);const s0=2+Math.floor(Math.random()*2);
+    const ans=isos[i0+st]+'';const opts=new Set([ans]);for(const o of [i0,i0+st+1,i0+st-1,i0+st+2])if(o>=0&&o<7&&opts.size<4)opts.add(isos[o]+'');
+    return [`You're at ${FULL_SH[s0]}, f/4, ISO ${isos[i0]}, but need ${FULL_SH[s0+st]} to freeze motion. Keeping f/4, which ISO keeps the exposure?`,[...opts].map(x=>'ISO '+x),`A ${st}-stop faster shutter needs ${st} stop${st>1?'s':''} more ISO: ${isos[i0]} → ${ans}.`,'ISO '+ans];}
+  const q=STATIC_Q[Math.floor(Math.random()*STATIC_Q.length)];return [q[0],q[1].slice(),q[2]];
+}
+const D={on:false,score:0,streak:0,time:60,timer:null,paused:false,lastQ:''};
+$('dBest').textContent=S.drillBest;
+function dStart(){D.on=true;D.score=0;D.streak=0;D.time=60;D.paused=false;clearInterval(D.timer);D.timer=setInterval(()=>{if(D.paused)return;D.time-=.1;if(D.time<=0)dEnd();dDraw();},100);dNext();dDraw();}
+function dDraw(){$('dScore').textContent=D.score;$('dStreak').textContent='×'+(1+Math.min(4,Math.floor(D.streak/3)));$('dTime').textContent=Math.max(0,Math.ceil(D.time));$('dBar').style.width=Math.max(0,D.time/60*100)+'%';}
+function dNext(){
+  let q;do{q=genQ();}while(q[0]===D.lastQ);D.lastQ=q[0];
+  const answer=q[3]||q[1][0];const opts=q[1].slice().sort(()=>Math.random()-.5);
+  $('dStage').innerHTML=`<p class="q">${q[0]}</p><div class="opts">${opts.map(o=>`<button class="opt" data-o="${encodeURIComponent(o)}">${o}</button>`).join('')}</div><div id="dEx"></div>`;
+  $('dStage').querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    if(!D.on)return;const pick=decodeURIComponent(b.dataset.o);$('dStage').querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(decodeURIComponent(x.dataset.o)===answer)x.classList.add('right');});
+    if(pick===answer){D.streak++;D.score+=10*(1+Math.min(4,Math.floor((D.streak-1)/3)));dDraw();setTimeout(()=>{if(D.on)dNext();},450);}
+    else{b.classList.add('wrong');D.streak=0;D.paused=true;dDraw();$('dEx').innerHTML=`<p class="explain">${q[2]}</p><div class="actions" style="margin-top:10px"><button class="btn primary" id="dGo">Next question</button></div>`;$('dGo').onclick=()=>{D.paused=false;dNext();};$('dGo').focus();}
+  });
+}
+function dEnd(){clearInterval(D.timer);D.on=false;D.time=0;const xp=Math.floor(D.score/10);const best=D.score>S.drillBest;if(best)S.drillBest=D.score;if(D.score>=150)award('drill');save();$('dBest').textContent=S.drillBest;
+  $('dStage').innerHTML=`<p class="q">Time! ${D.score} points${best?' · new best':''}.</p><p class="muted">Missed questions are the ones worth reviewing in the Field Guide.</p><div class="actions"><button class="btn primary" id="dStart2">Go again</button></div>`;$('dStart2').onclick=dStart;addXP(xp,'Stop Drill');}
+$('dStart').onclick=dStart;
+
+// ---------- principles ----------
+const LESSONS=[
+  ['The exposure triangle',`<p>Three controls set brightness, and each has a side effect:</p><ul><li><b>Shutter</b> controls motion. Fast freezes, slow blurs.</li><li><b>Aperture</b> controls depth of field. Small f-number = blurry background.</li><li><b>ISO</b> controls noise. Higher is brighter but grainier.</li></ul><p>One <b>stop</b> doubles or halves the light. Give a stop on one control, take a stop from another, and brightness stays the same.</p>`],
+  ['The meter thinks in grey',`<p>Your T6 meter assumes the scene averages to mid-grey (about 18% reflectance). That works for most scenes and fails for very bright or very dark ones.</p><ul><li>Snow, white sand, a bride's dress: add <b>+1 to +2</b>.</li><li>Black cat, night street, stage spotlight: subtract <b>−1 to −2</b>.</li><li>Backlit subject: switch to <b>Partial</b> metering or add +1⅔.</li></ul><p>Try it: Challenges 7 and 8.</p>`],
+  ['Read the histogram, not the LCD',`<p>The LCD lies in sunlight and looks great at night. The histogram doesn't.</p><ul><li>Left = shadows, right = highlights.</li><li>A wall on the right edge = blown highlights. Pull exposure down.</li><li>Expose as bright as you can without clipping what matters.</li></ul><p>On the T6, press <kbd>INFO</kbd> during playback until the histogram view appears, and turn on Highlight alert in the playback menu so blown areas blink.</p>`],
+  ['Depth of field: four levers',`<p>How much is sharp front to back depends on:</p><ol><li><b>Aperture</b>: f/3.5–5.6 shallow, f/8–f/11 deep.</li><li><b>Focal length</b>: 55mm blurs more than 18mm.</li><li><b>Subject distance</b>: closer = shallower.</li><li><b>Background distance</b>: push the background far behind the subject.</li></ol><p>The kit lens isn't a bokeh monster. Distance and zoom do most of the work.</p>`],
+  ['Shutter speed and motion',`<p>Two kinds of blur:</p><ul><li><b>Camera shake</b> blurs everything. Hand-hold at 1/(focal × 1.6) or faster. IS buys about 3 stops but cannot freeze a moving subject.</li><li><b>Subject motion</b> blurs only what moves. Walking: 1/250. Kids and pets: 1/500. Sports and birds: 1/1000+.</li></ul><p>Deliberate blur (water, traffic, panning) is a creative choice. Try Challenges 4, 5 and 11.</p>`],
+  ['White balance',`<p>Light has color. Sun is neutral, shade is blue, bulbs are orange. AWB handles most scenes but leaves indoor bulb light too warm.</p><ul><li>Under lamps: <b>Tungsten</b>.</li><li>In shade: <b>Shade</b> warms it back.</li><li>Sunsets: <b>Daylight</b> keeps the glow that AWB tries to remove.</li></ul><p>Shoot RAW (or RAW+L) and you can change it later.</p>`],
+  ['Light is the subject',`<p>Direction and quality beat settings every time.</p><ul><li><b>Golden hour</b>: low, warm, long shadows.</li><li><b>Open shade</b>: soft, flattering light for portraits. Turn faces toward the open sky.</li><li><b>Midday sun</b>: harsh. Look for shade, or use the hard shadows graphically.</li><li><b>Window light</b>: the best free studio light indoors.</li></ul>`],
+  ['Composition basics',`<ul><li><b>Rule of thirds</b>: put subjects and horizons on third lines. Turn on the Live View grid to practice.</li><li><b>Lead room</b>: give moving subjects space to move into.</li><li><b>Leading lines</b>: roads, fences and shorelines pull the eye in.</li><li><b>Simplify</b>: step closer or zoom until only what matters is left.</li><li><b>Check the edges</b>: the T6 viewfinder shows about 95%, so stray things can creep in.</li></ul><p>Practice with Frame It below.</p>`],
+  ['Focus where it counts',`<ul><li>For people, focus on the nearest eye.</li><li>Pick the AF point yourself (the AF point button) instead of letting the camera guess. The center point is the most reliable.</li><li><b>Focus and recompose</b>: center point on the eye, half-press, keep holding, reframe, shoot. Works best at f/5.6 and deeper.</li><li><b>One Shot</b> for still subjects, <b>AI Servo</b> for moving ones.</li></ul>`],
+  ['Sunny 16 and friends',`<p>A way to set exposure with no meter at all. ISO 100 and shutter 1/125, then:</p><ul><li>Bright sun, sharp shadows: <b>f/16</b></li><li>Light haze, soft shadows: <b>f/11</b></li><li>Overcast: <b>f/8</b></li><li>Heavy overcast: <b>f/5.6</b></li><li>Open shade or sunset: <b>f/4</b></li></ul><p>Use it to check whether the meter is being fooled.</p>`],
+];
+$('lessons').innerHTML=LESSONS.map(([t,b],i)=>`<details class="card" ${i<2?'open':''}><summary>${t}</summary><div class="body">${b}</div></details>`).join('');
+function eqDraw(){
+  const a=+$('eqA').value,i=+$('eqI').value;$('eqAO').textContent='f/'+FULL_AP[a];$('eqIO').textContent='ISO '+[100,200,400,800,1600,3200,6400][i];
+  const idx=3-(a-3)+i;const lbl=['1/15','1/30','1/60','1/125','1/250','1/500','1/1000','1/2000','1/4000'];const all=['1"','1/2','1/4','1/8',...lbl];const j=idx+4;
+  $('eqT').textContent=j<0?'too slow':j>=all.length?'past 1/4000':all[j];
+  $('eqD').textContent=a<=1?'very shallow':a<=2?'shallow':a<=3?'medium':a<=4?'deep':'very deep';
+  $('eqM').textContent=j<4?'tripod needed':j<6?'risky handheld':j<8?'walking pace OK':j<10?'freezes kids':'freezes sports';
+  $('eqN').textContent=['clean','clean','low','visible','grainy','heavy','very heavy'][i];
+}
+$('eqA').oninput=eqDraw;$('eqI').oninput=eqDraw;eqDraw();
+
+// ---------- Frame It ----------
+const fgc=$('fg'),fgx=fgc.getContext('2d');
+const FG={round:0,scores:[],sceneSeed:1,box:{x:180,y:120,w:396},drag:null,done:false,subj:null};
+function fgNewScene(){
+  const r=R(Math.floor(Math.random()*1e9));FG.sceneSeed=r;
+  const kinds=['tree','boat','lighthouse'];const kind=kinds[Math.floor(r()*3)];
+  const hz=H*(.38+r()*.26);const sx=W*(.22+r()*.56);const face=kind==='boat'?(r()<.5?1:-1):0;
+  FG.subj={kind,hz,sx,sy:kind==='boat'?hz+14:kind==='lighthouse'?hz-60:hz-40,face,seed:Math.floor(r()*1e6)};FG.done=false;
+  FG.box.w=W*(+$('fgSize').value/100);FG.box.x=(W-FG.box.w)/2;FG.box.y=(H-FG.box.w/1.5)/2;
+}
+function fgPaint(){
+  const c=fgx,s=FG.subj,r=R(s.seed);
+  c.fillStyle=lg(c,0,s.hz,[[0,'#7fb0e0'],[1,'#e6eff6']]);c.fillRect(0,0,W,s.hz);
+  for(let i=0;i<6;i++){c.globalAlpha=.7;ell(c,r()*W,r()*s.hz*.6,40+r()*60,10+r()*8,'#ffffff');}c.globalAlpha=1;
+  if(s.kind==='boat'){c.fillStyle=lg(c,s.hz,H,[[0,'#4f86b4'],[1,'#21496e']]);c.fillRect(0,s.hz,W,H-s.hz);c.globalAlpha=.3;for(let i=0;i<40;i++){c.fillStyle='#fff';c.fillRect(r()*W,s.hz+r()*(H-s.hz),20+r()*40,1.5);}c.globalAlpha=1;
+    const x=s.sx,y=s.hz+14,f=s.face;c.beginPath();c.moveTo(x-30*f,y-6);c.lineTo(x+34*f,y-6);c.lineTo(x+22*f,y+6);c.lineTo(x-24*f,y+6);c.closePath();c.fillStyle='#7a2a1d';c.fill();
+    c.beginPath();c.moveTo(x,y-8);c.lineTo(x,y-70);c.lineTo(x+28*f,y-12);c.closePath();c.fillStyle='#f6f2e8';c.fill();c.beginPath();c.moveTo(x-2*f,y-10);c.lineTo(x-2*f,y-60);c.lineTo(x-22*f,y-12);c.closePath();c.fill();}
+  else{c.fillStyle=lg(c,s.hz,H,[[0,s.kind==='lighthouse'?'#6f7b5a':'#9cbf6a'],[1,s.kind==='lighthouse'?'#3d4636':'#5f8a3d']]);c.fillRect(0,s.hz,W,H-s.hz);
+    if(s.kind==='tree'){c.fillStyle='#4a3826';c.fillRect(s.sx-4,s.hz-40,8,44);for(let i=0;i<7;i++)circ(c,s.sx+(r()-.5)*50,s.hz-58+(r()-.5)*36,16+r()*10,['#3e6d3c','#4f7f45','#2f5a33'][i%3]);}
+    else{const x=s.sx,y=s.hz;c.beginPath();c.moveTo(x-12,y);c.lineTo(x-8,y-90);c.lineTo(x+8,y-90);c.lineTo(x+12,y);c.closePath();c.fillStyle='#f2efe8';c.fill();c.fillStyle='#c43a2a';c.fillRect(x-10,y-60,20,12);c.fillRect(x-9,y-30,18,12);c.fillStyle='#2a2d33';c.fillRect(x-10,y-104,20,14);c.fillStyle='#ffd77a';c.fillRect(x-6,y-101,12,8);}}
+}
+function drawFG(){
+  if(!FG.subj)fgNewScene();fgPaint();const c=fgx,b=FG.box,bh=b.w/1.5;
+  c.fillStyle='rgba(0,0,0,.5)';c.beginPath();c.rect(0,0,W,H);c.rect(b.x,b.y+bh,b.w,-bh);c.fill('evenodd');
+  c.strokeStyle='#fff';c.lineWidth=2;c.strokeRect(b.x,b.y,b.w,bh);c.lineWidth=1;c.strokeStyle='rgba(255,255,255,.7)';
+  for(const f of [1/3,2/3]){c.beginPath();c.moveTo(b.x+b.w*f,b.y);c.lineTo(b.x+b.w*f,b.y+bh);c.moveTo(b.x,b.y+bh*f);c.lineTo(b.x+b.w,b.y+bh*f);c.stroke();}
+  $('fgRound').textContent=`Round ${Math.min(FG.round+1,3)} / 3`;$('fgSizeO').textContent=$('fgSize').value+'%';
+}
+function fgPt(e){const rc=fgc.getBoundingClientRect();return [(e.clientX-rc.left)/rc.width*W,(e.clientY-rc.top)/rc.height*H];}
+fgc.addEventListener('pointerdown',e=>{if(FG.done)return;const [x,y]=fgPt(e);FG.drag=[x-FG.box.x,y-FG.box.y];fgc.setPointerCapture(e.pointerId);});
+fgc.addEventListener('pointermove',e=>{if(!FG.drag)return;const [x,y]=fgPt(e),b=FG.box;b.x=clamp(x-FG.drag[0],0,W-b.w);b.y=clamp(y-FG.drag[1],0,H-b.w/1.5);drawFG();});
+fgc.addEventListener('pointerup',()=>FG.drag=null);
+$('fgSize').oninput=()=>{if(FG.done)return;const b=FG.box,cx=b.x+b.w/2,cy=b.y+b.w/3;b.w=W*(+$('fgSize').value/100);b.x=clamp(cx-b.w/2,0,W-b.w);b.y=clamp(cy-b.w/3,0,H-b.w/1.5);drawFG();};
+$('fgShoot').onclick=()=>{
+  if(FG.done){if(FG.round>=3){FG.round=0;FG.scores=[];}fgNewScene();drawFG();$('fgShoot').textContent='Take the shot';$('fgMsg').textContent=`Round ${FG.round+1} of 3. Place the subject on a third and the horizon on a third line.`;return;}
+  const b=FG.box,bh=b.w/1.5,s=FG.subj,u=(s.sx-b.x)/b.w,v=(s.sy-b.y)/bh,h=(s.hz-b.y)/bh;
+  let score,notes=[];
+  if(u<.06||u>.94||v<.06||v>.94){score=0;notes.push('The subject is cut off or jammed against the edge.');}
+  else{const du=Math.min(Math.abs(u-1/3),Math.abs(u-2/3)),dv=Math.min(Math.abs(v-1/3),Math.abs(v-2/3)),dh=(h>0&&h<1)?Math.min(Math.abs(h-1/3),Math.abs(h-2/3)):.4;
+    score=100-du*220-dv*90-dh*160;
+    if(du>.08)notes.push(Math.abs(u-.5)<.1?'The subject is dead center. Slide it onto a vertical third.':'Move the subject closer to a vertical third line.');
+    if(dh>.06)notes.push(Math.abs(h-.5)<.08?'The horizon cuts the frame in half. Put it on the upper or lower third.':'Line the horizon up with a horizontal third line.');
+    if(s.face){const room=s.face>0?(1-u):u;if(room<.5){score-=15;notes.push('The boat is sailing out of the frame. Give it room in front.');}else{score+=5;notes.push('Nice lead room in front of the boat.');}}
+    if(b.w>W*.75&&du<.08)notes.push('Try zooming the frame in a little to simplify.');}
+  score=Math.round(clamp(score,0,100));FG.scores.push(score);FG.round++;FG.done=true;
+  const c=fgx;circ(c,s.sx,s.sy,6,'#FF6B4E');
+  if(FG.round>=3){const avg=Math.round(FG.scores.reduce((a,b)=>a+b,0)/3);if(avg>S.frameBest)S.frameBest=avg;if(avg>=85)award('composer');save();
+    $('fgMsg').innerHTML=`<b>${score}/100.</b> ${notes.join(' ')||'Textbook placement.'}<br><b>Game average: ${avg}</b> (best ${S.frameBest}).`;$('fgShoot').textContent='Play again';addXP(Math.round(avg/10),'Frame It');}
+  else{$('fgMsg').innerHTML=`<b>${score}/100.</b> ${notes.join(' ')||'Textbook placement.'}`;$('fgShoot').textContent='Next scene';}
+};
+
+// ---------- recipes ----------
+const RECIPES=[
+  ['Set Av and choose an aperture',['Turn the mode dial to Av.','Turn the main dial: right for bigger f-numbers (more depth), left for smaller (more blur).','Half-press and check the shutter speed in the viewfinder. If it drops below 1/(focal × 1.6), raise ISO.']],
+  ['Dial in exposure compensation',['Works in P, Tv and Av.','Hold the Av± button and turn the main dial. The mark moves along the viewfinder scale.','It stays set, even after power-off. Set it back to 0 when you are done.']],
+  ['Shoot in full manual',['Mode dial to M. Set ISO first (ISO button + main dial).','Hold Av± and turn the dial to set the aperture.','Turn the main dial alone for shutter, until the mark sits where you want it, usually 0.']],
+  ['Pick your own AF point',['Press the AF point selection button (top right of the back).','Turn the main dial or use the cross keys to light up one point.','Press SET to jump back to the center point.']],
+  ['Track moving subjects',['Press ▶ on the cross keys and choose AI Servo.','Press ◀ and choose Continuous (about 3 fps).','Use Tv at 1/500–1/1000 and keep the shutter half-pressed while you follow.']],
+  ['Switch metering mode',['Press Q, highlight the metering icon, choose Partial for backlit or spotlit subjects.','Or use the shooting menu: Metering mode.','Go back to Evaluative for everyday shooting.']],
+  ['Lock exposure, then recompose',['Point the center at the part that should be mid-tone (a face, grass).','Press ✱. An asterisk appears in the viewfinder.','Recompose and shoot while the lock holds.']],
+  ['Fix color under lamps',['Press ▲ (WB) on the cross keys.','Choose the bulb icon (Tungsten).','Remember to set it back to AWB when you go outside.']],
+  ['Long exposures and light trails',['Tripod, lens STABILIZER OFF, mode M, ISO 100.','f/8–f/11, shutter 4"–30". Past 30" is BULB.','Press ◀ and pick the 2 s self-timer so pressing the button doesn\'t shake the camera.']],
+  ['See and trust the histogram',['Playback menu: turn Highlight alert on.','In playback, press INFO until the histogram appears.','Blinking areas are blown highlights. Pull exposure down and reshoot.']],
+  ['Shoot RAW for wiggle room',['Menu → Image quality → RAW+L.','RAW lets you fix white balance and recover about a stop of exposure later.','Bigger files: carry a spare card.']],
+  ['Turn on a composition grid',['Live View shooting menu: Grid display.','Press the Live View button and compose with the thirds grid.','Great for landscapes and straight horizons.']],
+];
+$('recipes').innerHTML=RECIPES.map(([t,steps])=>`<details class="card"><summary>${t}</summary><div class="body"><ol>${steps.map(s=>`<li>${s}</li>`).join('')}</ol></div></details>`).join('');
+
+// ---------- missions ----------
+const MISSIONS=[
+  ['Week 1 · Leave the green box',[
+    ['m1','Av walkabout','Shoot 20 frames in Av only. Photograph the same scene at f/5.6 and f/11 and compare the backgrounds.'],
+    ['m2','Aperture ladder','Subject 1.5 m away, zoom to 55mm, shoot every aperture from f/5.6 to f/22. Compare them on a computer.'],
+    ['m3','Watch the meter','In Av, half-press and watch the shutter change as you aim at sky, then ground, then a dark doorway.'],
+    ['m4','Grey card test','Fill the frame with something white (sheet, wall, snow). Shoot at 0, +1 and +2 compensation. Which looks white?']]],
+  ['Week 2 · Time',[
+    ['m5','Freeze frame','Tv 1/1000, AI Servo, continuous drive. Photograph a pet, a kid, or passing cars.'],
+    ['m6','Drag the shutter','Tv 1/15 down to 1/4 on running water or traffic. Brace yourself or use a tripod.'],
+    ['m7','Find your shake limit','At 55mm with IS off, shoot at 1/100, 1/50, 1/25 and 1/13. Then IS on. Zoom in on the LCD to compare.']]],
+  ['Week 3 · ISO and light',[
+    ['m8','Noise ladder','Same indoor scene at ISO 400, 1600 and 6400. Zoom to 100% and decide your personal ISO ceiling.'],
+    ['m9','Golden hour vs noon','Shoot the same spot at midday and an hour before sunset. Note the shadows and color.'],
+    ['m10','White balance swap','Under kitchen lights, shoot AWB, Tungsten and Daylight. Which looks like what your eyes saw?']]],
+  ['Week 4 · Full manual',[
+    ['m11','Sunny 16 day','M mode, ISO 100, f/16, 1/125 in full sun. Check the histogram. How close was the rule?'],
+    ['m12','Meter match','In M, set aperture first, then turn the dial until the mark hits 0. Do it in 10 different scenes.'],
+    ['m13','Night trails','Tripod, M, ISO 100, f/8, 10–20 s, 2-second self-timer, IS off. Find a busy road.']]],
+  ['Anytime · Composition',[
+    ['m14','Thirds only','20 shots with the subject on a third intersection. Use the Live View grid.'],
+    ['m15','Leading lines','Find 5 scenes where a road, fence or shoreline leads into the frame.'],
+    ['m16','One focal length','Spend an outing at 18mm only, then another at 55mm only. Move your feet instead of the zoom.']]],
+];
+function renderMissions(){
+  $('mlist').innerHTML=MISSIONS.map(([g,ms])=>`<div class="card" style="gap:12px"><div class="eyebrow">${g}</div>${ms.map(([id,t,d])=>`<div class="mission ${S.missions[id]?'done':''}"><input type="checkbox" id="${id}" ${S.missions[id]?'checked':''} aria-label="Mark ${t} done"><div style="display:flex;flex-direction:column;gap:4px;min-width:0"><label for="${id}"><h4>${t}</h4></label><p style="font-size:14px">${d}</p><textarea id="${id}-n" placeholder="What did you learn? (saved in this browser)">${(S.notes[id]||'').replace(/</g,'&lt;')}</textarea></div></div>`).join('')}</div>`).join('');
+}
+$('mlist').addEventListener('change',e=>{const id=e.target.id;if(e.target.type!=='checkbox')return;const was=!!S.missions[id];S.missions[id]=e.target.checked;e.target.closest('.mission').classList.toggle('done',e.target.checked);
+  if(e.target.checked&&!S.everDone?.[id]){S.everDone=S.everDone||{};S.everDone[id]=1;addXP(40,'Field mission');}
+  if(Object.values(S.missions).filter(Boolean).length>=5)award('field5');save();renderBadges();});
+let noteT;$('mlist').addEventListener('input',e=>{if(e.target.tagName!=='TEXTAREA')return;S.notes[e.target.id.replace('-n','')]=e.target.value;clearTimeout(noteT);noteT=setTimeout(save,400);});
+function renderBadges(){
+  $('badges').innerHTML=BADGES.map(([id,t,d])=>`<div class="badge ${S.badges[id]?'got':''}"><b>${S.badges[id]?'★ ':''}${t}</b><span>${d}</span></div>`).join('');
+  const stars=CH.reduce((a,c)=>a+(S.best[c.id]||0),0);
+  $('statLine').textContent=`${Object.keys(S.badges).length} of ${BADGES.length} earned · ${stars}/${CH.length*3} challenge stars · ${S.shots} shots · drill best ${S.drillBest} · Frame It best ${S.frameBest}`;
+}
+$('resetBtn').onclick=()=>{$('resetZone').innerHTML=`<span>Erase XP, stars, badges and notes?</span><button class="btn" id="resetNo">Keep my progress</button><button class="btn" id="resetYes" style="border-color:var(--bad);color:var(--bad)">Erase everything</button>`;
+  $('resetNo').onclick=()=>location.reload();$('resetYes').onclick=()=>{S=blank();save();location.reload();};};
+
+// ---------- the course ----------
+const apSvg=()=>{const ns=[3.5,5.6,8,11,16,22];let x=10,h='';ns.forEach(n=>{const r=Math.max(3,26*3.5/n);h+=`<g transform="translate(${x+30} 40)"><circle r="30" fill="var(--ink)"/><circle r="${r.toFixed(1)}" fill="var(--bg)"/><text y="58" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="var(--ink)">f/${n}</text></g>`;x+=72;});
+  return `<svg viewBox="0 0 450 110" width="100%" style="max-width:520px;min-width:360px" role="img" aria-label="Aperture openings from f/3.5 to f/22">${h}</svg>`;};
+const COURSE=[
+ {id:'l1',title:'Why leave the green box',mins:8,learn:['What A+ decides for you','The four creative modes','Program shift and exposure compensation'],
+  read:`<p>On <b>A+</b> your T6 makes every decision: shutter speed, aperture, ISO, focus point, flash and color. It is a smart guesser, but it can't read your mind. It doesn't know you wanted the background soft, the waterfall silky, or the snow white instead of grey.</p>
+  <p>The four letters on the dial (<b>P, Tv, Av, M</b>) are the <i>creative zone</i>. Each one hands you a little more control:</p>
+  <ul><li><b>P</b> (Program): the camera still picks shutter and aperture, but ISO, white balance, metering and brightness are yours.</li><li><b>Tv</b>: you pick the shutter speed, which controls motion.</li><li><b>Av</b>: you pick the aperture, which controls background blur.</li><li><b>M</b>: you pick everything.</li></ul>
+  <p>This course climbs that ladder in order. By lesson 9 you'll shoot in full manual, and you'll know <i>why</i> each setting is where it is.</p>`,
+  key:'Auto modes aren\'t wrong, they\'re guesses. Creative modes let you tell the camera what matters in this photo.',
+  setup:{scene:'park',cam:{mode:'A+',focal:35,comp:0}},
+  steps:[
+   {do:'The dial is on A+. Press <b>Shoot</b> to take a picture the way you do now.',hl:['shootBtn'],shot:true,ok:()=>cam.mode==='A+',why:r=>`A+ chose ${shL(r.kT)} at f/${apL(r.kA)}, ISO ${ISO[r.iso]}. A fine photo, but none of it was your decision.`},
+   {do:'Click <b>P</b> on the mode dial.',hl:['dial'],ok:()=>cam.mode==='P',why:'Program mode still balances shutter and aperture for you, but look at the controls: ISO, exposure comp., metering and white balance just unlocked.'},
+   {do:'Press <b>Dial ▶</b> three times (or the → key). Watch shutter and aperture in the black viewfinder strip.',hl:['dialR','vf'],ok:()=>Math.abs(cam.pshift)>=3,live:r=>`Now: ${shL(r.kT)} · f/${apL(r.kA)}`,why:'Both numbers changed, but the meter mark stayed on 0. That\'s program shift: the same amount of light, split differently between time and opening. This trade is the heart of photography.'},
+   {do:'Click <b>Av± hold</b>, then press <b>◀ Dial</b> twice.',hl:['avBtn','dialL'],ok:()=>cam.comp<=-2,live:()=>`Exposure comp: ${sgnThirds(cam.comp/3)}`,why:'That\'s exposure compensation: you told the camera "make it darker than you think." The meter mark slid to −⅔. You\'ll use this all the time in lesson 7.'},
+   {do:'Set compensation back to ±0 (Av± hold + Dial ▶), release Av± and take a shot in P.',hl:['ec','shootBtn'],shot:true,ok:()=>cam.mode==='P'&&cam.comp===0,fail:()=>cam.mode!=='P'?'Switch back to P first.':'Compensation is not at ±0 yet.',why:'Your first creative-mode photo. On the real T6 it\'s exactly this: turn the dial to P and shoot as usual.'}],
+  t6:['Turn the mode dial to P and leave it there for a day.','Keep the flash down unless you really need it (in P it only pops up when you press the flash button).','Try program shift: half-press, then turn the main dial. Watch the two numbers trade places.'],
+  quiz:[['In P mode, what does the main dial do?',['Shifts the shutter/aperture pair, keeping brightness','Changes ISO','Changes the focus point'],'Program shift keeps the same exposure while trading shutter for aperture.'],
+        ['Which of these can you NOT change in A+?',['Exposure compensation','Zoom','Where you stand'],'A+ locks out compensation, ISO, white balance and metering.'],
+        ['Which mode lets you choose the aperture and leaves the shutter to the camera?',['Av','Tv','P'],'Av = Aperture value priority.']],
+  ch:['c1'],missions:['m1']},
+ {id:'l2',title:'Light comes in stops',mins:10,learn:['The three exposure controls','What a "stop" is','Why 3 clicks = 1 stop on your T6'],
+  read:`<p><b>Exposure</b> is how much light reaches the sensor. Three settings control it, and each one has a side effect:</p>
+  <ul><li><b>Shutter speed</b>: how long the sensor looks. Side effect: motion blur.</li><li><b>Aperture</b>: how big the hole in the lens is. Side effect: depth of field (background blur).</li><li><b>ISO</b>: how much the sensor's signal is amplified. Side effect: noise (grain).</li></ul>
+  <p>A <b>stop</b> means double or half the light. That's the one unit photographers use for all three settings, so you can trade between them.</p>
+  <div class="diagram"><div class="ladder">
+   <span class="h">Shutter</span><span>1/30</span><span>1/60</span><span>1/125</span><span>1/250</span><span>1/500</span>
+   <span class="h">Aperture</span><span>f/4</span><span>f/5.6</span><span>f/8</span><span>f/11</span><span>f/16</span>
+   <span class="h">ISO</span><span>1600</span><span>800</span><span>400</span><span>200</span><span>100</span></div>
+   <p class="cap">Each step to the right is one stop <b>less</b> light (or sensitivity). Any column is the same brightness as any other if you move the same number of steps in opposite directions.</p></div>
+  <p>Aperture numbers feel backwards: <b>bigger number, smaller hole</b>. That's because an f-number is a fraction. f/8 means the opening is the focal length divided by 8, so f/16 is a smaller opening than f/8.</p>
+  <p>Your T6 moves shutter and aperture in <b>⅓ stops</b>: 1/125 → 1/160 → 1/200 → 1/250. So <b>three clicks of the main dial = one stop</b>. ISO moves in full stops: 100, 200, 400 and up.</p>`,
+  key:'Three clicks of the main dial is one stop. Give a stop on one setting, take a stop from another, and brightness doesn\'t change.',
+  setup:{scene:'park',cam:{mode:'M',iso:0,kA:18,kT:30,focal:35,autoIso:false,dist:3}},
+  steps:[
+   {do:'You\'re in M at ISO 100, f/8, 1/1000. The meter in the viewfinder strip reads −3 (too dark). Turn the <b>main dial ◀</b> (or drag Shutter) until the mark sits on <b>0</b>.',hl:['dialL','vf'],ok:r=>Math.abs(r.reading)<=.17,live:r=>`Shutter ${shL(r.kT)} · meter ${sgnThirds(r.reading)}`,why:'At 0 the meter thinks exposure is right. You moved 9 clicks = 3 stops: 1/1000 → 1/500 → 1/250 → 1/125.'},
+   {do:'Now open the aperture by one stop: click <b>Av± hold</b> and press <b>◀ Dial</b> 3 times (f/8 → f/5.6).',hl:['avBtn','dialL'],enter:r=>({kA:r.kA}),ok:(r,ph,x)=>r.kA===x.kA-3,live:(r,ph,x)=>`Aperture f/${apL(r.kA)} (${x.kA-r.kA} of 3 clicks) · meter ${sgnThirds(r.reading)}`,why:'One stop wider = twice the light. The meter jumped to +1.'},
+   {do:'Get back to 0 using <b>only the shutter</b>: release Av± and press <b>Dial ▶</b> 3 times.',hl:['avBtn','dialR'],enter:r=>({kA:r.kA}),ok:(r,ph,x)=>Math.abs(r.reading)<=.17&&r.kA===x.kA,live:r=>`${shL(r.kT)} · f/${apL(r.kA)} · meter ${sgnThirds(r.reading)}`,why:'You traded one stop of opening for one stop of time. Same brightness, slightly different picture. These are <b>equivalent exposures</b>.'},
+   {do:'Raise ISO by one stop: click <b>ISO</b>, then <b>Dial ▶</b> once (100 → 200).',hl:['isoBtn','dialR'],enter:r=>({iso:r.iso}),ok:(r,ph,x)=>r.iso===x.iso+1,live:r=>`ISO ${ISO[r.iso]} · meter ${sgnThirds(r.reading)}`,why:'ISO amplifies the signal, so +1 stop again. The meter reads +1.'},
+   {do:'Fix it with the shutter (press ISO again to release it, then Dial ▶ ×3), then <b>Shoot</b>.',hl:['isoBtn','dialR','shootBtn'],shot:true,ok:r=>Math.abs(r.err)<=.34,fail:r=>`Meter reads ${sgnThirds(r.reading)}. Bring it to 0 first.`,why:'Three controls share one budget of light. Every exposure decision is really choosing which side effect you want.'}],
+  t6:['Set M mode. Point at something evenly lit.','Turn the main dial and count clicks while watching the scale at the bottom of the viewfinder: 3 clicks per mark.','Hold Av± and turn the dial: watch the aperture move in the same ⅓ steps.'],
+  quiz:[['1/250 to 1/125 is…',['One stop more light','One stop less light','Three stops more'],'Twice as long open = double the light = +1 stop.'],
+        ['Which opening is bigger?',['f/4','f/11','They are the same'],'Smaller f-number = bigger hole.'],
+        ['On the T6, how many main-dial clicks make one stop of shutter speed?',['3','1','6'],'The T6 steps in ⅓ stops.']],
+  ch:[],missions:['m3']},
+ {id:'l3',title:'Aperture and background blur (Av)',mins:12,learn:['What aperture does to the picture','The four levers of background blur','Using Av mode safely'],
+  read:`<p>The aperture is an adjustable hole in your lens. Besides letting in light, it controls <b>depth of field</b>: how much of the scene, front to back, looks sharp.</p>
+  <div class="diagram">${apSvg()}<p class="cap">Smaller f-number = bigger opening = more light and a <b>shallower</b> zone of sharpness.</p></div>
+  <h4>The four levers of background blur</h4>
+  <ol><li><b>Aperture</b>: f/3.5–5.6 blurs, f/11–22 keeps things sharp.</li><li><b>Focal length</b>: zoomed to 55mm blurs much more than 18mm.</li><li><b>Distance to subject</b>: the closer you are, the shallower it gets.</li><li><b>Distance behind subject</b>: move your subject away from the wall or trees behind them.</li></ol>
+  <p>Your kit lens is labeled <b>f/3.5–5.6</b>. That means its widest aperture is f/3.5 at 18mm but only f/5.6 at 55mm. Zooming in costs light, yet it still gives you more blur. That's why most portraits on this lens are shot at 55mm, f/5.6, close up.</p>
+  <h4>Av mode</h4>
+  <p>In Av, you turn the main dial to choose the aperture and the camera picks the shutter speed. The one thing to watch: when you choose a small aperture in dim light, the shutter gets slow. Glance at the shutter number before you shoot.</p>`,
+  key:'Portrait? Zoom in, get close, open up. Landscape? Zoom out, stop down to f/8–f/11.',
+  setup:{scene:'park',cam:{mode:'Av',focal:18,kA:27,iso:1,autoIso:false,dist:4,is:true}},
+  steps:[
+   {do:'You\'re in Av at 18mm, f/22, standing 4 m away. <b>Shoot</b> this one for comparison.',hl:['shootBtn'],shot:true,ok:()=>true,why:(r,ph)=>`Background blur: ${ph.bgBlur.toFixed(1)} px. The trees are nearly sharp. Note the camera chose ${shL(r.kT)} to get enough light through that tiny hole.`},
+   {do:'Turn the <b>main dial ◀</b> to the smallest f-number the lens allows (f/3.5).',hl:['dialL','ap'],ok:r=>r.kA===r.kmin,live:(r,ph)=>`f/${apL(r.kA)} · camera picked ${shL(r.kT)} · bg blur ${ph.bgBlur.toFixed(1)} px`,why:'The shutter got faster on its own: that\'s Av doing its job. The background softened a bit, but at 18mm it\'s still fairly busy.'},
+   {do:'Zoom to <b>55mm</b>.',hl:['fl'],ok:()=>cam.focal>=55,live:(r,ph)=>`${cam.focal}mm · f/${apL(r.kA)} · bg blur ${ph.bgBlur.toFixed(1)} px`,why:'The aperture jumped to f/5.6 (your lens can\'t open wider when zoomed), yet the blur readout went up. Focal length is a strong lever.'},
+   {do:'Step closer: set Subject distance to <b>2 m or less</b>.',hl:['dist'],ok:()=>cam.dist<=2,live:(r,ph)=>`${cam.dist.toFixed(1)} m · bg blur ${ph.bgBlur.toFixed(1)} px`,why:'Closer subject = shallower depth of field. Now the trees dissolve.'},
+   {do:'Make sure you\'re at the widest aperture (f/5.6 at 55mm) and <b>Shoot</b>.',hl:['shootBtn'],shot:true,ok:(r,ph)=>r.kA===r.kmin&&ph.bgBlur>=14,fail:()=>'Not quite: check you are at f/5.6, 55mm and 2 m or closer.',why:'Compare this frame with your first one in the filmstrip. Same light, same place. You changed only aperture, zoom and distance.'}],
+  t6:['Dial to Av. Have a friend (or a mug) stand well away from the background.','Zoom to 55mm, get as close as you can frame them, turn the main dial left until it stops (f/5.6).','Shoot. Then f/16 from the same spot. Compare on the LCD.'],
+  quiz:[['Which gives the blurriest background on the kit lens?',['55mm, f/5.6, close','18mm, f/3.5, far','18mm, f/22'],'Zoom and distance matter as much as the f-number.'],
+        ['In Av, if you pick f/22 indoors, what will probably go wrong?',['The shutter gets very slow and the photo blurs','The photo turns blue','Nothing'],'Small hole + dim light = long shutter.'],
+        ['Why can\'t you get f/3.5 at 55mm?',['The kit lens\'s widest aperture shrinks as you zoom','It\'s a camera setting','You need Tv mode'],'f/3.5–5.6 on the lens barrel describes exactly that.']],
+  ch:['c2','c3'],missions:['m2']},
+ {id:'l4',title:'Shutter speed and motion (Tv)',mins:10,learn:['Which shutter speeds freeze what','Using motion blur on purpose','What a blinking number means'],
+  read:`<p>Shutter speed is how long the sensor collects light. Whatever moves during that time smears.</p>
+  <div class="diagram"><div class="ladder" style="grid-template-columns:repeat(5,minmax(90px,1fr))">
+   <span>1/15 and slower<br><small>water, traffic, tripod</small></span><span>1/60<br><small>still people</small></span><span>1/250<br><small>walking</small></span><span>1/500<br><small>kids, pets</small></span><span>1/1000+<br><small>sports, bikes, birds</small></span></div>
+   <p class="cap">A starting point for freezing motion. Things moving across the frame need faster speeds than things moving toward you.</p></div>
+  <h4>Tv mode</h4>
+  <p>In Tv (time value) you pick the shutter with the main dial; the camera picks the aperture. If the aperture number <b>blinks</b> in the viewfinder, the camera ran out of options:</p>
+  <ul><li>Blinking <b>f/22</b>-ish: too much light for your slow shutter. Pick a faster shutter or lower ISO.</li><li>Blinking <b>f/3.5–5.6</b>: not enough light for your fast shutter. Raise ISO.</li></ul>
+  <p>The T6 goes from 30 seconds to 1/4000. Pair Tv with <b>▶ AI Servo</b> focus and <b>◀ Continuous</b> drive for action.</p>`,
+  key:'Freeze it: go fast. Show movement: go slow, and keep the camera still.',
+  setup:{scene:'path',cam:{mode:'Tv',focal:35,kT:18,iso:0,autoIso:false,is:true}},
+  steps:[
+   {do:'Tv mode at 1/60. <b>Shoot</b> the cyclist.',hl:['shootBtn'],shot:true,ok:()=>true,why:(r,ph)=>`The bike moved ${ph.motion.toFixed(1)} px while the shutter was open. Blurry wheels, blurry rider.`},
+   {do:'Turn the <b>main dial ▶</b> to <b>1/1000</b> or faster.',hl:['dialR','sh'],ok:r=>r.kT>=30,live:(r,ph)=>`${shL(r.kT)} · camera chose f/${apL(r.kA)} · motion ${ph.motion.toFixed(1)} px`,why:'The camera opened the aperture to make up for the shorter time. Motion is now under 1 px.'},
+   {do:'<b>Shoot</b> it.',hl:['shootBtn'],shot:true,ok:r=>r.kT>=30,why:'Frozen, down to the spokes. Compare the two frames in the filmstrip.'},
+   {do:'Now go slow: turn the <b>main dial ◀</b> down to <b>1/15</b>. Watch the viewfinder strip.',hl:['dialL','vf'],ok:r=>r.kT<=12,live:r=>`${shL(r.kT)} · f/${apL(r.kA)}${r.blinkA?' (blinking!)':''}`,why:r=>r.blinkA?'The aperture is blinking. Even f/22 can\'t block enough sunlight for 1/15, so this shot would be overexposed. That\'s the limit of slow shutters in daylight.':'Slow shutter selected.'},
+   {do:'Find the <b>slowest shutter that doesn\'t blink</b> and <b>Shoot</b>.',hl:['dialR','shootBtn'],shot:true,ok:(r,ph)=>!r.blinkA&&ph.motion>=8,fail:r=>r.blinkA?'The aperture is still blinking. Go one click faster.':'Too fast to show motion. Go slower until just before it blinks.',why:'That\'s deliberate motion blur. In bright sun, slow-shutter effects need ISO 100 and f/22 (or an ND filter).'}],
+  t6:['Dial to Tv. Press ▶ and choose AI Servo, press ◀ and choose Continuous.','Find something moving: traffic, a dog, a kid on a scooter.','Shoot a burst at 1/1000, then at 1/30. Which one tells the story better?'],
+  quiz:[['A kid running around the yard. Starting shutter?',['1/500','1/30','2"'],'Kids and pets need 1/500 or faster.'],
+        ['In Tv the aperture is blinking at f/3.5. What do you do?',['Raise ISO or pick a slower shutter','Pick a faster shutter','Switch on IS'],'Not enough light: get more from ISO or time.'],
+        ['Which AF mode follows a moving subject?',['AI Servo','One Shot','Manual'],'AI Servo keeps refocusing while you half-press.']],
+  ch:['c4','c5'],missions:['m5','m6']},
+ {id:'l5',title:'Holding it steady',mins:8,learn:['Camera shake vs subject motion','The hand-holding rule for the T6','When IS helps and when it doesn\'t'],
+  read:`<p>Two different blurs get confused:</p><ul><li><b>Camera shake</b>: your hands move, so <i>everything</i> blurs, even the buildings.</li><li><b>Subject motion</b>: only the moving things blur.</li></ul>
+  <h4>The hand-holding rule</h4><p>Shoot at least <b>1/(focal length × 1.6)</b>. The 1.6 is your T6's crop factor.</p>
+  <div class="diagram"><div class="ladder" style="grid-template-columns:84px repeat(3,minmax(70px,1fr));min-width:320px"><span class="h">Zoom</span><span>18mm</span><span>35mm</span><span>55mm</span><span class="h">Slowest</span><span>1/30</span><span>1/60</span><span>1/100</span></div><p class="cap">Without image stabilization. With IS on, you can usually go about 3 stops slower.</p></div>
+  <p><b>IS (the STABILIZER switch)</b> cancels your wobble, but it can't stop your subject from moving. A sharp wall and a blurry person at 1/8 is classic IS.</p>
+  <p>Technique counts too: elbows tucked in, exhale and squeeze the button gently, lean on a wall. Shoot a burst of three: one is often sharper. On a tripod, switch IS off and use the 2-second timer (◀).</p>`,
+  key:'Everything blurry = your hands. Only the subject blurry = their movement.',
+  setup:{scene:'park',cam:{mode:'Tv',focal:55,kT:15,iso:0,autoIso:false,is:false,tripod:false}},
+  steps:[
+   {do:'55mm, 1/30, IS <b>off</b>. <b>Shoot</b>.',hl:['shootBtn'],shot:true,ok:()=>true,why:(r,ph)=>`Camera shake: ${ph.shake.toFixed(1)} px. Everything is soft, background included. At 55mm you need about 1/90.`},
+   {do:'Tick <b>Lens IS on</b>.',hl:['is'],ok:()=>cam.is,live:(r,ph)=>`Shake ${ph.shake.toFixed(1)} px`,why:'The shake readout dropped a lot. Stabilization buys about 3 stops.'},
+   {do:'<b>Shoot</b> again at 1/30.',hl:['shootBtn'],shot:true,ok:(r,ph)=>ph.shake<=1.5,why:'Sharp at 1/30, thanks to IS. If your friend were moving, though, IS couldn\'t help.'},
+   {do:'Turn IS <b>off</b>, then find the slowest shutter that stays sharp without it (shake 1.5 px or less).',hl:['is','dialR'],ok:(r,ph)=>!cam.is&&ph.shake<=1.5&&r.kT<=20,live:(r,ph)=>`${shL(r.kT)} · shake ${ph.shake.toFixed(1)} px ${ph.shake<=1.5?'(sharp)':'(blurry)'}`,why:'Right around 1/80–1/100, which is 1/(55 × 1.6). That\'s your safe line at 55mm.'}],
+  t6:['Zoom to 55mm, switch STABILIZER off.','Shoot the same sign or text at 1/100, 1/50, 1/25, 1/13. Zoom in on the LCD.','Switch IS on and repeat. Now you know your personal limit.'],
+  quiz:[['Handheld at 35mm, IS off. Slowest safe shutter?',['About 1/60','1/8','1/1000'],'35 × 1.6 = 56, so 1/60.'],
+        ['The building is sharp but the person walking past is blurred. Cause?',['Subject motion','Camera shake','Wrong ISO'],'Only moving things blurred.'],
+        ['On a tripod, the STABILIZER switch should be…',['OFF','ON','Doesn\'t matter'],'IS can add tiny vibrations on a locked-down camera.']],
+  ch:[],missions:['m7']},
+ {id:'l6',title:'ISO: borrowing light',mins:9,learn:['What ISO really does','How much noise to accept on the T6','The low-light order of operations'],
+  read:`<p>ISO doesn't add light. It amplifies what the sensor already caught, and noise gets amplified with it.</p>
+  <div class="diagram"><div class="ladder" style="grid-template-columns:repeat(4,minmax(90px,1fr));min-width:380px"><span>100–400<br><small>clean</small></span><span>800–1600<br><small>good</small></span><span>3200<br><small>fine for web</small></span><span>6400 / H<br><small>emergencies</small></span></div><p class="cap">Rough guide for the T6's sensor.</p></div>
+  <h4>Low light, in this order</h4><ol><li>Open the aperture as wide as it goes.</li><li>Slow the shutter as far as your subject and hands allow.</li><li><b>Then</b> raise ISO until the shutter is safe.</li></ol>
+  <p>A slightly grainy sharp photo beats a clean blurry one every time.</p>
+  <p><b>Auto ISO</b>: in P, Tv and Av the T6 can choose ISO for you. Set it with the ISO button and pick AUTO. In Tv mode it's a great combination for kids and pets indoors.</p>`,
+  key:'Aperture first, shutter second, ISO last. And don\'t fear ISO 1600.',
+  setup:{scene:'room',cam:{mode:'Av',focal:18,kA:11,iso:0,autoIso:false,is:true,wb:'3200',dist:2.5}},
+  steps:[
+   {do:'Evening, lamp light, f/3.5, ISO 100. Look at the shutter the camera picked, then <b>Shoot</b>.',hl:['sh','shootBtn'],shot:true,ok:()=>true,why:(r,ph)=>`The camera needed ${shL(r.kT)}. The cat moved ${ph.motion.toFixed(0)} px and your hands added ${ph.shake.toFixed(0)} px of shake. Unusable.`},
+   {do:'Click <b>ISO</b>, then press <b>Dial ▶</b> one stop at a time until the shutter reaches <b>1/50 or faster</b>.',hl:['isoBtn','dialR'],ok:r=>r.kT>=17,live:r=>`ISO ${ISO[r.iso]} → shutter ${shL(r.kT)}`,why:r=>`Each ISO stop doubled the shutter speed. ISO ${ISO[r.iso]} got you to ${shL(r.kT)}.`},
+   {do:'<b>Shoot</b> it.',hl:['shootBtn'],shot:true,ok:(r,ph)=>ph.motion<=2&&ph.shake<=1.5,fail:()=>'Still blurry. Raise ISO one more stop.',why:'Sharp, with a little grain. That\'s the right trade.'},
+   {do:'Now let the camera do it: tick <b>Auto ISO</b>.',hl:['autoiso'],ok:r=>r.autoIso,live:r=>`Auto chose ISO ${ISO[r.iso]} → ${shL(r.kT)}`,why:'In Av, Auto ISO raises ISO when the shutter gets too slow for your hands. It doesn\'t know your cat is moving, so for pets and kids use Tv + Auto ISO instead.'}],
+  t6:['Indoors at night, Av, f/3.5 or f/5.6.','Shoot the same scene at ISO 400, 1600 and 6400.','Zoom in to 100% on the LCD or a computer. Decide your personal ceiling.'],
+  quiz:[['Low light. What do you change first?',['Open the aperture','Raise ISO to 6400','Faster shutter'],'Free light first, amplified light last.'],
+        ['Does raising ISO let more light into the camera?',['No, it amplifies the signal','Yes','Only in M'],'Which is why it adds noise.'],
+        ['Kids indoors. A good combination is…',['Tv 1/250 + Auto ISO','Av f/22 + ISO 100','A+'],'You lock the motion-stopping shutter; the camera finds the ISO.']],
+  ch:[],missions:['m8']},
+ {id:'l7',title:'Metering: when the camera is fooled',mins:12,learn:['How the meter "thinks"','Exposure compensation','Partial metering and the histogram'],
+  read:`<p>Your T6's meter has one assumption: <b>the world averages to mid-grey</b>. Usually that's true. When it isn't, the meter gets it wrong in a predictable way.</p>
+  <div class="diagram"><div class="swatches"><div><i style="background:#f4f5f6"></i>White snow…</div><div><i style="background:#8a8c8e"></i>…the meter makes grey</div><div><i style="background:#18191a"></i>A black cat → also grey</div></div><p class="cap">The meter turns very bright scenes too dark and very dark scenes too bright.</p></div>
+  <h4>The fix: exposure compensation</h4><p>In P, Tv and Av, hold <b>Av±</b> and turn the main dial. Plus = brighter than the meter wants, minus = darker. Rules of thumb:</p>
+  <ul><li>Snow, beach, white dress: <b>+1 to +2</b></li><li>Dark scenes, black objects: <b>−1 to −2</b></li><li>Backlit person: <b>+1⅔</b>, or use Partial metering</li></ul>
+  <h4>Metering modes on the T6</h4><ul><li><b>Evaluative</b>: whole frame, smart. Everyday default.</li><li><b>Partial</b>: just the center ~10%. Best for backlight and spotlit subjects.</li><li><b>Center-weighted</b>: whole frame, center counts more.</li></ul><p>There's no spot meter on the T6: Partial is your precision tool. Change it on the Q screen.</p>
+  <h4>Check with the histogram</h4><p>After the shot, the histogram tells the truth. Bunched in the middle on a snow scene = too grey. A wall against the right edge = blown highlights.</p>`,
+  key:'The meter wants grey. You know when the scene isn\'t grey, so tell it with Av±.',
+  setup:{scene:'snow',cam:{mode:'Av',focal:35,kA:18,iso:0,comp:0,meter:'eval',autoIso:false,dist:5}},
+  steps:[
+   {do:'Snow scene, Av, no compensation. <b>Shoot</b> and look at the histogram under the photo.',hl:['shootBtn','hist'],shot:true,ok:()=>true,why:'Dull grey snow, and the histogram sits in the middle. The meter did exactly what it was built to do: make the scene average grey.'},
+   {do:'Click <b>Av± hold</b> and press <b>Dial ▶</b> until compensation reads <b>+1⅔</b> (5 clicks).',hl:['avBtn','dialR','ec'],ok:()=>cam.comp===5,live:()=>`Exposure comp ${sgnThirds(cam.comp/3)}`,why:'You told the camera "this scene is brighter than average." The meter mark now sits at +1⅔.'},
+   {do:'<b>Shoot</b>.',hl:['shootBtn'],shot:true,ok:r=>Math.abs(r.err)<=.5,why:'White snow with detail kept. The histogram shifted right without piling into the edge.'},
+   {do:'Next problem: backlight.',act:{label:'Go to the sunset scene',fn:()=>loadScene('sunset',false)},ok:()=>sceneId==='sunset',why:'The sun is right behind your friend. Evaluative metering sees all that bright sky.'},
+   {do:'Change <b>Metering</b> to <b>Partial</b>.',hl:['meter'],ok:()=>cam.meter==='partial',why:'Partial reads only the center ~10% of the frame, which is where the face is.'},
+   {do:'<b>Shoot</b>.',hl:['shootBtn'],shot:true,ok:r=>Math.abs(r.err)<=.67,fail:r=>`Still ${thirds(r.err)} stops ${r.err>0?'bright':'dark'}. Check that you are in Av with Partial metering and ±0 compensation.`,why:'The face is properly exposed now. The sky burns out a bit: that\'s the honest trade-off with backlight. A reflector or fill flash would balance it.'}],
+  t6:['Fill the frame with something white (a sheet, a wall, snow). Shoot at 0, +1 and +2.','Put a friend in front of a bright window. Shoot with Evaluative, then Q → Partial.','In playback, press INFO until you see the histogram. Compare.'],
+  quiz:[['Beach photos look dull and grey. Fix?',['+1 to +2 compensation','−1 compensation','Raise ISO'],'Bright scene fooled the meter: add exposure.'],
+        ['Which T6 metering mode is best for a backlit face?',['Partial','Evaluative','Spot'],'Partial reads the center. (The T6 has no spot.)'],
+        ['How do you set compensation in Av?',['Hold Av± and turn the main dial','Turn the main dial alone','Press ▲'],'Same in P and Tv.']],
+  ch:['c7','c8'],missions:['m4']},
+ {id:'l8',title:'White balance',mins:7,learn:['Why light has color','Which preset to pick','When AWB gets it wrong'],
+  read:`<p>Your eyes adjust to the color of light automatically; the camera has to be told. Light is measured in <b>kelvin</b>:</p>
+  <div class="diagram"><div style="height:22px;border-radius:6px;min-width:360px;background:linear-gradient(90deg,#ff9a3c,#ffc48a 25%,#fff4e6 50%,#e8f0ff 75%,#a9c6ff)"></div>
+   <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;min-width:360px"><span>Candle 1900K</span><span>Bulbs 3000K</span><span>Sun 5200K</span><span>Cloudy 6000K</span><span>Shade 7500K</span></div></div>
+  <p>Pick the preset that matches the light (press <b>▲</b> on the cross keys): Daylight, Shade, Cloudy, Tungsten (bulbs), White fluorescent, or AWB.</p>
+  <ul><li><b>AWB</b> is good outdoors but leaves indoor bulb light orange.</li><li><b>Tungsten</b> under lamps adds blue to cancel the orange.</li><li><b>Shade</b> warms up the blue tint you get in open shade.</li><li>At sunset, <b>Daylight</b> keeps the glow that AWB tries to "fix".</li></ul>
+  <p>Shooting <b>RAW</b> lets you change white balance later, which takes the pressure off.</p>`,
+  key:'Match the preset to the light. Then switch back to AWB when you walk outside.',
+  setup:{scene:'room',cam:{mode:'Av',focal:18,kA:11,iso:4,autoIso:false,wb:'AWB',dist:2.5}},
+  steps:[
+   {do:'Lamp-lit room, AWB. <b>Shoot</b>.',hl:['shootBtn'],shot:true,ok:()=>true,why:'An orange cast: AWB only partly corrected the bulb light.'},
+   {do:'Set White balance to <b>Daylight</b>.',hl:['wb'],ok:()=>cam.wb==='5200',why:'Even more orange. Daylight assumes neutral light, so it does nothing to cancel the bulbs.'},
+   {do:'Now set it to <b>Tungsten</b>.',hl:['wb'],ok:()=>cam.wb==='3200',why:'Neutral. Tungsten adds just enough blue to cancel the bulb\'s orange.'},
+   {do:'<b>Shoot</b>.',hl:['shootBtn'],shot:true,ok:(r,ph)=>Math.abs(ph.warm)<=.2,why:'Correct color. Compare it with your first frame in the filmstrip.'}],
+  t6:['Under kitchen or living-room lamps, press ▲ and shoot AWB, Tungsten and Daylight.','Step outside without changing it. See the blue? That\'s why you switch back.'],
+  quiz:[['Indoor bulb photos look orange. Choose…',['Tungsten','Shade','Daylight'],'Tungsten cancels warm bulb light.'],
+        ['Which button opens WB on the T6?',['▲','◀','Q only'],'▲ is WB, ◀ drive, ▶ AF, ▼ Picture Style.'],
+        ['Why might you NOT want AWB at sunset?',['It neutralizes the warm glow','It overexposes','It turns off focus'],'Daylight keeps the warmth.']],
+  ch:['c6'],missions:['m10','m9']},
+ {id:'l9',title:'Full manual',mins:12,learn:['A workflow for M mode','Sunny 16','When M beats the auto modes'],
+  read:`<p>In M the meter only <i>advises</i>. You read the scale and decide. A workflow that works on the T6:</p>
+  <ol><li><b>ISO</b>: the lowest that will work (ISO button + dial).</li><li><b>Aperture</b> for depth (hold Av± + dial).</li><li><b>Shutter</b> for motion (main dial).</li><li>Adjust whichever matters least until the meter mark is where you want it: usually 0, +1⅔ for snow, a little minus for dark scenes.</li></ol>
+  <h4>When M is better</h4><ul><li><b>Steady light</b>: the exposure won't jump around as your subject moves across a bright or dark background.</li><li><b>Tricky scenes</b>: snow, stage lights, backlight.</li><li><b>Night and long exposures</b>: up to 30" or Bulb (past 30" on the main dial).</li><li><b>Panoramas</b>: every frame matches.</li></ul>
+  <h4>Sunny 16</h4><p>A rule from film days that still works: in bright sun at f/16, the shutter is about 1/ISO. ISO 100 → 1/125. Overcast → f/8. Use it to sanity-check the meter.</p>`,
+  key:'Set what matters most first, then balance the rest against the meter.',
+  setup:{scene:'path',cam:{mode:'M',focal:35,iso:0,kA:24,kT:15,autoIso:false,is:true,dist:8}},
+  steps:[
+   {do:'M mode, ISO 100, f/16, in full sun. Turn the <b>main dial</b> until the meter reads <b>0</b>.',hl:['dialR','vf'],ok:r=>Math.abs(r.reading)<=.17&&r.kA===24&&r.iso===0,live:r=>`${shL(r.kT)} · meter ${sgnThirds(r.reading)}`,why:'1/125. That\'s Sunny 16: f/16 and 1/ISO in bright sun. The rule and the meter agree.'},
+   {do:'The cyclist needs <b>1/1000</b>. Turn the main dial to 1/1000.',hl:['dialR'],ok:r=>r.kT>=30,live:r=>`${shL(r.kT)} · meter ${sgnThirds(r.reading)}`,why:'The meter now reads −3: three stops dark. In M, the camera won\'t fix it for you.'},
+   {do:'Click <b>Av± hold</b> and open the aperture (<b>◀ Dial</b>) until the meter is back at <b>0</b>.',hl:['avBtn','dialL'],ok:r=>Math.abs(r.reading)<=.17&&r.kT>=30,live:r=>`f/${apL(r.kA)} · meter ${sgnThirds(r.reading)}`,why:'f/5.6. You traded three stops of depth of field for three stops of shutter speed, the exact same trade as lesson 2, but now it\'s on purpose.'},
+   {do:'<b>Shoot</b>.',hl:['shootBtn'],shot:true,ok:(r,ph)=>Math.abs(r.err)<=.34&&ph.motion<=1.2,fail:()=>'Check the meter is at 0 and the shutter is 1/1000 or faster.',why:'Full manual, frozen and correctly exposed. You\'re ready for the manual challenges.'}],
+  t6:['On a sunny day: M, ISO 100, f/16, 1/125. Shoot. Check the histogram.','Then use the workflow: ISO → aperture → shutter, matching the meter in 10 different scenes.','At night: tripod, ISO 100, f/8, 10 seconds, 2 s timer.'],
+  quiz:[['Sunny 16 at ISO 200: f/16 and…',['1/250','1/60','1/16'],'Shutter ≈ 1/ISO, so 1/200 (1/250 is the nearest full stop).'],
+        ['In M, how do you change the aperture on the T6?',['Hold Av± and turn the main dial','Turn the main dial','Press ISO'],'The main dial alone sets the shutter.'],
+        ['The M-mode meter reads −2. The camera thinks the shot is…',['Two stops dark','Two stops bright','Correct'],'Left of 0 = darker than the meter wants.']],
+  ch:['c9','c10','c11','c12'],missions:['m11','m12','m13']},
+ {id:'l10',title:'Focus and composition',mins:10,learn:['AF modes and choosing the AF point','Focus and recompose','Rule of thirds, lead room, simplifying'],
+  read:`<h4>Focus where it counts</h4><ul><li><b>One Shot</b> (▶): locks focus once. For still subjects.</li><li><b>AI Servo</b>: keeps refocusing while you half-press. For moving subjects.</li><li><b>AI Focus</b>: switches between the two automatically. Not always reliably, so pick one yourself.</li></ul>
+  <p>By default the T6 picks among its 9 AF points, usually the closest thing, which often isn't your subject. Press the <b>AF point button</b> (top right of the back) and choose the center point. It's the most sensitive one.</p>
+  <p><b>Focus and recompose</b>: put the center point on the subject's eye, half-press to lock, keep holding, reframe, then shoot.</p>
+  <h4>Composition in four habits</h4><ol><li><b>Rule of thirds</b>: put the subject and horizon on third lines, not dead center. Turn on the Live View grid to practice.</li><li><b>Lead room</b>: give moving or looking subjects space in front of them.</li><li><b>Leading lines</b>: roads, fences and shorelines pull the eye into the photo.</li><li><b>Simplify</b>: zoom or step closer until only what matters is left. Check the edges, since the T6 viewfinder shows only about 95% of the frame.</li></ol>`,
+  key:'Choose the focus point yourself, then choose where the subject sits in the frame.',
+  practice:'frame',
+  t6:['Press the AF point button and select the center point. Leave it there for a week.','Practice focus and recompose on a person\'s eye at f/5.6.','Turn on the Live View grid and shoot 20 frames with the subject on a third.'],
+  quiz:[['Your dog runs toward you. AF mode?',['AI Servo','One Shot','AI Focus'],'Servo tracks.'],
+        ['The camera keeps focusing on the background. Fix?',['Select the center AF point yourself','Raise ISO','Use Tv'],'Don\'t let the camera guess.'],
+        ['A boat sailing left should be placed…',['On the right third, with room in front','On the left edge','Dead center'],'Lead room.']],
+  ch:[],missions:['m14','m15','m16']},
+];
+
+let coach=null;
+const HL_IDS={sh:'sh',ap:'ap',iso:'iso',ec:'ec',fl:'fl',dist:'dist',meter:'meter',wb:'wb',is:'is',tripod:'tripod',autoiso:'autoiso',dialR:'dialR',dialL:'dialL',avBtn:'avBtn',isoBtn:'isoBtn',vf:'vf',hist:'hist',shootBtn:'shootBtn',dial:'dial'};
+function applyHL(ids){document.querySelectorAll('.hl').forEach(e=>e.classList.remove('hl'));ids.forEach(k=>{const el=$(HL_IDS[k]);if(!el)return;const t=el.closest('.ctl')||el.closest('label')||el;t.classList.add('hl');});}
+function startCoach(i){
+  const L=COURSE[i];challenge=null;coach={L,i,step:0,snap:null,done:[],msg:''};
+  loadScene(L.setup.scene);Object.assign(cam,{pshift:0},L.setup.cam);dialMod=null;
+  showTab('shoot');renderChallenges();renderSceneChips();schedule();
+  document.querySelector('.shoot').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function curStep(){return coach&&coach.L.steps[coach.step];}
+function whyText(st,r,ph){return typeof st.why==='function'?st.why(r,ph,coach.snap||{}):st.why;}
+function completeStep(r,ph){
+  const st=curStep();coach.done.push(whyText(st,r,ph));coach.step++;coach.snap=null;coach.msg='';
+  if(coach.step>=coach.L.steps.length){const id=coach.L.id;if(!S.lessons[id]){S.lessons[id]=1;save();addXP(50,'Lesson complete');}}
+  renderCoach();schedule();
+}
+function coachTick(){
+  const st=curStep();if(!st||!last)return;
+  if(!coach.snap)coach.snap=st.enter?st.enter(last.r,last.ph):{};
+  const lv=$('coachLive');if(lv&&st.live)lv.textContent=st.live(last.r,last.ph,coach.snap);
+  if(!st.shot&&st.ok(last.r,last.ph,coach.snap))completeStep(last.r,last.ph);
+}
+function coachShot(r,ph){
+  const st=curStep();if(!st)return;
+  if(!st.shot){coach.msg='Saved to the filmstrip. Follow the highlighted step to continue.';renderCoach();return;}
+  if(st.ok(r,ph,coach.snap||{}))completeStep(r,ph);else{coach.msg=st.fail?st.fail(r,ph):'Not quite. Check the step and shoot again.';renderCoach();}
+}
+function renderCoach(){
+  const c=coach,L=c.L,b=$('brief'),fin=c.step>=L.steps.length;
+  b.innerHTML=`<div class="eyebrow">Lesson ${c.i+1} · Guided practice</div><h3>${L.title}</h3>
+   <ol class="steps">${L.steps.map((s,k)=>k<c.step?`<li class="done"><div><div>${s.do}</div><div class="why">${c.done[k]}</div></div></li>`:k===c.step?`<li class="cur"><div><div class="do">${s.do}</div>${s.act?`<div class="actions" style="margin-top:6px"><button class="btn primary" id="coachAct">${s.act.label}</button></div>`:''}<div class="live" id="coachLive"></div>${c.msg?`<div class="msg">${c.msg}</div>`:''}</div></li>`:`<li class="todo"><div>${s.do}</div></li>`).join('')}</ol>
+   ${fin?`<div class="callout"><b class="lbl">Lesson complete</b>${L.key}</div><div class="actions">${L.ch.length?`<button class="btn primary" id="coachCh">Try challenge: ${CH.find(x=>x.id===L.ch[0]).title}</button>`:''}${COURSE[c.i+1]?`<button class="btn ${L.ch.length?'':'primary'}" id="coachNext">Next lesson</button>`:''}</div>`:''}
+   <div class="actions"><button class="btn" id="coachBack">Back to the lesson</button><button class="btn" id="coachRestart">Restart steps</button><button class="btn" id="coachExit">Free shoot</button></div>`;
+  const st=curStep();applyHL(st&&st.hl?st.hl:[]);
+  if(st&&st.live&&last&&$('coachLive'))$('coachLive').textContent=st.live(last.r,last.ph,coach.snap||{});
+  if($('coachAct'))$('coachAct').onclick=()=>st.act.fn();
+  $('coachBack').onclick=()=>{S.cur=c.i;coach=null;applyHL([]);renderBrief();showTab('learn');};
+  $('coachRestart').onclick=()=>startCoach(c.i);
+  $('coachExit').onclick=()=>{coach=null;renderBrief();renderSceneChips();};
+  if($('coachCh'))$('coachCh').onclick=()=>{const idx=CH.findIndex(x=>x.id===L.ch[0]);coach=null;challenge=CH[idx];loadScene(challenge.scene);renderChallenges();};
+  if($('coachNext'))$('coachNext').onclick=()=>{coach=null;applyHL([]);S.cur=c.i+1;save();showTab('learn');window.scrollTo({top:0,behavior:'smooth'});};
+}
+function renderCourse(){
+  const n=COURSE.filter(l=>S.lessons[l.id]).length;
+  $('courseBar').style.width=(n/COURSE.length*100)+'%';$('courseCount').textContent=`${n} of ${COURSE.length} lessons complete`;
+  $('courseList').innerHTML=COURSE.map((l,i)=>`<li><button data-l="${i}" aria-current="${i===S.cur}"><span class="num">${String(i+1).padStart(2,'0')}</span><span>${l.title}</span><span class="okm">${S.lessons[l.id]?'✓':''}</span></button></li>`).join('');
+  renderLesson();
+}
+$('courseList').addEventListener('click',e=>{const b=e.target.closest('[data-l]');if(!b)return;S.cur=+b.dataset.l;save();renderCourse();if(window.innerWidth<860)$('lessonView').scrollIntoView({behavior:'smooth'});});
+function renderLesson(){
+  const i=clamp(S.cur||0,0,COURSE.length-1),L=COURSE[i],v=$('lessonView'),done=!!S.lessons[L.id];
+  const chs=L.ch.map(id=>CH.find(c=>c.id===id));const ms=L.missions.map(id=>{for(const [,g] of MISSIONS)for(const m of g)if(m[0]===id)return m;}).filter(Boolean);
+  v.innerHTML=`<div class="lhead"><div class="eyebrow">Lesson ${i+1} of ${COURSE.length} · about ${L.mins} min${done?' · complete ✓':''}</div><h2>${L.title}</h2>
+    <div class="learnlist">${L.learn.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>
+   <div class="read">${L.read}</div>
+   <div class="callout"><b class="lbl">Key idea</b>${L.key}</div>
+   ${L.steps?`<div class="practice"><div class="eyebrow">Step 2 · Guided practice in the simulator</div><h3>Do it, step by step</h3><p style="font-size:14.5px">A coach walks you through it. Each step tells you which control to use, waits for you, then explains what just happened.</p><ol>${L.steps.map(s=>`<li>${s.do.replace(/<[^>]+>/g,'')}</li>`).join('')}</ol><div class="actions"><button class="btn primary" id="startCoach">${done?'Practice again':'Start guided practice'}</button></div></div>`
+    :`<div class="practice"><div class="eyebrow">Step 2 · Practice</div><h3>Play Frame It</h3><p style="font-size:14.5px">Drag a frame over three scenes and get feedback on placement, horizon and lead room.</p><div class="actions"><button class="btn primary" id="goFrame">Open Frame It</button>${done?'':'<button class="btn" id="markDone">Mark lesson complete</button>'}</div></div>`}
+   <div class="t6box"><div class="eyebrow">Step 3 · On your T6</div><ol>${L.t6.map(x=>`<li>${x}</li>`).join('')}</ol>${ms.length?`<p class="hint">Log it as a field mission: ${ms.map(m=>`<b>${m[1]}</b>`).join(', ')} (Missions tab).</p>`:''}</div>
+   <div class="lq"><div class="eyebrow">Step 4 · Check yourself</div>${L.quiz.map((q,k)=>{const opts=q[1].map((o,j)=>[o,j]).sort(()=>Math.random()-.5);return `<div class="card" data-q="${k}"><p class="qq">${q[0]}</p><div class="opts">${opts.map(([o,j])=>`<button class="opt" data-j="${j}">${o}</button>`).join('')}</div><p class="explain" hidden>${q[2]}</p></div>`;}).join('')}</div>
+   ${chs.length?`<div class="t6box"><div class="eyebrow">Then test it</div><div class="chips">${chs.map(c=>`<button class="chip" data-ch="${c.id}">${c.title}</button>`).join('')}</div><p class="hint">Challenges unlock in order. Finish earlier ones first if these are locked.</p></div>`:''}
+   <div class="lnav">${i>0?`<button class="btn" id="prevL">← ${COURSE[i-1].title}</button>`:'<span></span>'}${COURSE[i+1]?`<button class="btn" id="nextL">${COURSE[i+1].title} →</button>`:''}</div>`;
+  if($('startCoach'))$('startCoach').onclick=()=>startCoach(i);
+  if($('goFrame'))$('goFrame').onclick=()=>{showTab('principles');$('fg').scrollIntoView({behavior:'smooth',block:'center'});};
+  if($('markDone'))$('markDone').onclick=()=>{S.lessons[L.id]=1;save();addXP(50,'Lesson complete');renderCourse();};
+  if($('prevL'))$('prevL').onclick=()=>{S.cur=i-1;save();renderCourse();window.scrollTo({top:0,behavior:'smooth'});};
+  if($('nextL'))$('nextL').onclick=()=>{S.cur=i+1;save();renderCourse();window.scrollTo({top:0,behavior:'smooth'});};
+  v.querySelectorAll('[data-q]').forEach(card=>card.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    const k=+card.dataset.q,right=+b.dataset.j===0;card.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(+x.dataset.j===0)x.classList.add('right');});if(!right)b.classList.add('wrong');
+    card.querySelector('.explain').hidden=false;const key=L.id+'-'+k;if(right&&!S.quiz[key]){S.quiz[key]=1;save();addXP(5);}}));
+  v.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>{const idx=CH.findIndex(c=>c.id===b.dataset.ch);if(!unlocked(idx)){toast('Finish the earlier challenges in the Simulator tab first.');return;}coach=null;challenge=CH[idx];loadScene(challenge.scene);renderChallenges();showTab('shoot');});
+}
+
+// ---------- boot ----------
+renderRank();renderChallenges();renderMissions();renderBadges();
+challenge=CH.find((c,i)=>unlocked(i)&&(S.best[c.id]||0)<3)||null;
+loadScene(challenge?challenge.scene:'park');
+const hashTab=(location.hash||'').slice(1);
+showTab(['learn','shoot','drills','guide','principles','missions'].includes(hashTab)?hashTab:(S.tab||'learn'));
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>last&&drawHist());
+})();
+</script>
+
+</body>
+</html>
